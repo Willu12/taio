@@ -1,4 +1,5 @@
 #pragma once
-namespace metric {
+namespace metric
+{
 int findCycle();
-}
+} // namespace metric
