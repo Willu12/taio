@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <vector>
 
+typedef std::size_t vertex;
+
 namespace core
 {
 class multiGraph {
