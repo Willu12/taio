@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/borys/Studies/TAiO/build",
+  "command": "/usr/bin/c++  -I/home/borys/Studies/TAiO/include -std=gnu++23 -o CMakeFiles/app.dir/src/main.cpp.o -c /home/borys/Studies/TAiO/src/main.cpp",
+  "file": "/home/borys/Studies/TAiO/src/main.cpp"
+}
+]
