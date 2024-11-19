@@ -12,8 +12,10 @@ class multiGraph {
     std::vector<std::vector<std::size_t>> adjacencyMatrix;
 
   public:
+    multiGraph(const core::multiGraph& multiGraph);
     multiGraph(const std::vector<std::vector<std::size_t>>& adjacencyMatrix);
     std::size_t size() const;
+    std::vector<vertex> getNeighbours(vertex v);
 };
 
 } // namespace core
