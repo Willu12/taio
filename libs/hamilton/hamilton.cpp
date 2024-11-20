@@ -2,5 +2,7 @@
 
 namespace hamilton
 {
-int findCycle() { return 1; }
+int findCycle() {
+    return 1;
+}
 } // namespace hamilton
