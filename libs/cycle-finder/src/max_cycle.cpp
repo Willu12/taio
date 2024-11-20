@@ -6,7 +6,8 @@
 namespace cycleFinder
 {
 MaxCycle::MaxCycle(const core::multiGraph& multiGraph, unsigned int k)
-    : multigraph(multiGraph), k(k), stronglyConnectedComponentsFinder(multiGraph) {
+    : multiGraph(multiGraph), k(k), stronglyConnectedComponentsFinder(multiGraph) {
+    this->multiGraph = multiGraph.KGraph(k);
 }
 
 std::vector<std::vector<vertex>> MaxCycle::solve() {
@@ -15,22 +16,23 @@ std::vector<std::vector<vertex>> MaxCycle::solve() {
 
     while (stronglyConnectedComponents.empty() == false) {
         leastVertex = stronglyConnectedComponents.front()[0];
-        auto new_cycles = processStronglyConnectedComponent(stronglyConnectedComponents.front());
-        multigraph.removeAllEdges(leastVertex);
-        stronglyConnectedComponentsFinder = StronglyConnectedComponents(multigraph);
+        processStronglyConnectedComponent(stronglyConnectedComponents.front());
+        multiGraph.removeAllEdges(leastVertex);
+        stronglyConnectedComponentsFinder = StronglyConnectedComponents(multiGraph);
         stronglyConnectedComponents = stronglyConnectedComponentsFinder.solve();
-
-        cycles.insert(cycles.end(), new_cycles.begin(), new_cycles.end());
     }
 
-    return cycles;
+    filterMaxCycles();
+
+    return maxCycles;
 }
 
 void MaxCycle::processStronglyConnectedComponent(const std::vector<vertex>& scc) {
     blocked.clear();
     blockedMap.clear();
     stack.clear();
-    auto G = multigraph.inducedSubgraph(scc);
+    auto G = multiGraph.inducedSubgraph(scc);
+    processVertex(leastVertex, G);
 }
 
 bool MaxCycle::processVertex(vertex v, const core::multiGraph& multiGraph) {
@@ -38,7 +40,7 @@ bool MaxCycle::processVertex(vertex v, const core::multiGraph& multiGraph) {
 
     if (stack.empty() == false && v == leastVertex) {
         std::vector<vertex> cycle = std::vector<vertex>(stack.size() + 1);
-        cycle.insert(cycle.begin(), stack.begin(), stack.end());
+        std::copy(stack.begin(), stack.begin(), cycle.begin());
         cycle[cycle.size() - 1] = v;
         cycles.push_back(cycle);
         foundCycle = true;
@@ -76,8 +78,14 @@ void MaxCycle::unblockVertex(vertex v) {
     }
 }
 
-std::vector<vertex> getCycleFromStack(const std::stack<vertex>& stack) {
-    // get all items from stack
+void MaxCycle::filterMaxCycles() {
+    std::size_t maxSize = 0;
+    for (const auto& cycle : cycles)
+        maxSize = maxSize > cycle.size() ? maxSize : cycle.size();
+
+    for (const auto& cycle : cycles) {
+        if (cycle.size() == maxSize) maxCycles.push_back(cycle);
+    }
 }
 
 } // namespace cycleFinder

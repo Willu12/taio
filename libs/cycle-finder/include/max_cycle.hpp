@@ -8,11 +8,12 @@ namespace cycleFinder
 class MaxCycle {
   private:
     std::vector<std::vector<vertex>> cycles;
+    std::vector<std::vector<vertex>> maxCycles;
     std::vector<vertex> stack;
     std::set<vertex> blocked;
     std::unordered_map<vertex, std::vector<vertex>> blockedMap;
 
-    core::multiGraph multigraph;
+    core::multiGraph multiGraph;
     StronglyConnectedComponents stronglyConnectedComponentsFinder;
     vertex leastVertex;
     unsigned int k;
@@ -20,6 +21,7 @@ class MaxCycle {
 
     void unblockVertex(vertex v);
     bool processVertex(vertex v, const core::multiGraph& multiGraph);
+    void filterMaxCycles();
 
   public:
     MaxCycle(const core::multiGraph& multiGraph, unsigned int k);

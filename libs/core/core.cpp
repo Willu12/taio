@@ -63,4 +63,15 @@ void multiGraph::removeAllEdges(vertex v) {
     }
 }
 
+multiGraph multiGraph::KGraph(unsigned int k) const {
+
+    multiGraph G = multiGraph(*this);
+    for (vertex v = 0; v < G.size(); v++) {
+        for (vertex u = 0; u < G.size(); u++) {
+            if (G.adjacencyMatrix[v][u] < k) G.adjacencyMatrix[v][u] = 0;
+        }
+    }
+    return G;
+}
+
 } // namespace core
