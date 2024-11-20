@@ -34,8 +34,8 @@ void MultigraphCLI::run() const {
         const auto multigraph1 = get_multigraph(input1_, multigraphs1);
 
         const auto multigraph2 = (input1_.filepath == input2_.filepath)
-                                      ? get_multigraph(input2_, multigraphs1)
-                                      : get_multigraph(input2_, load_multigraphs(input2_.filepath));
+                                     ? get_multigraph(input2_, multigraphs1)
+                                     : get_multigraph(input2_, load_multigraphs(input2_.filepath));
 
         print_multigraph(multigraph1);
         print_multigraph(multigraph2);
@@ -71,7 +71,8 @@ std::vector<AdjacencyMatrix> MultigraphCLI::parse_all_multigraphs(std::istream& 
             }
 
             std::istringstream row_stream(line);
-            adjacency_matrix.emplace_back(std::istream_iterator<std::size_t>(row_stream), std::istream_iterator<std::size_t>());
+            adjacency_matrix.emplace_back(std::istream_iterator<std::size_t>(row_stream),
+                                          std::istream_iterator<std::size_t>());
 
             if (adjacency_matrix.back().size() != num_vertices) {
                 throw std::runtime_error("Invalid input format: Row size mismatch.");
@@ -120,4 +121,3 @@ void MultigraphCLI::print_multigraph(const Multigraph& multigraph) {
     }
     std::cout << "\n";
 }
-

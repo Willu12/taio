@@ -19,13 +19,13 @@ struct Multigraph {
 };
 
 class MultigraphCLI {
-public:
+  public:
     MultigraphCLI();
     void parse(int argc, char** argv);
     int exit(const CLI::ParseError& e);
     void run() const;
 
-private:
+  private:
     CLI::App app_{"TAiO: Multigraph Comparator"};
     Multigraph input1_{"", 0, {}};
     Multigraph input2_{"", 0, {}};
@@ -37,4 +37,3 @@ private:
 };
 
 #endif // MULTIGRAPHCLI_HPP
-

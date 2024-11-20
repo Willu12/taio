@@ -1,6 +1,5 @@
 #include "multigraph_cli.hpp"
 
-
 int main(int argc, char** argv) {
     MultigraphCLI cli;
     try {
@@ -11,4 +10,3 @@ int main(int argc, char** argv) {
     cli.run();
     return 0;
 }
-
