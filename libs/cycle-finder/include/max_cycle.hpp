@@ -1,7 +1,6 @@
 #pragma once
 #include "core.hpp"
 #include "strongly_connected_components.hpp"
-#include <stack>
 #include <unordered_map>
 #include <vector>
 namespace cycleFinder
@@ -9,15 +8,18 @@ namespace cycleFinder
 class MaxCycle {
   private:
     std::vector<std::vector<vertex>> cycles;
-    std::stack<vertex> stack;
+    std::vector<vertex> stack;
     std::set<vertex> blocked;
-    std::unordered_map<vertex, vertex> blockedMap;
+    std::unordered_map<vertex, std::vector<vertex>> blockedMap;
 
     core::multiGraph multigraph;
     StronglyConnectedComponents stronglyConnectedComponentsFinder;
+    vertex leastVertex;
     unsigned int k;
-    std::vector<std::vector<vertex>> processStronglyConnectedComponent(
-        const std::vector<vertex>& stronglyConnectedComponent);
+    void processStronglyConnectedComponent(const std::vector<vertex>& stronglyConnectedComponent);
+
+    void unblockVertex(vertex v);
+    bool processVertex(vertex v, const core::multiGraph& multiGraph);
 
   public:
     MaxCycle(const core::multiGraph& multiGraph, unsigned int k);
