@@ -40,6 +40,9 @@ void MultigraphCLI::run() const {
         print_multigraph(multigraph1);
         print_multigraph(multigraph2);
 
+        hamilton::findHamiltonianKExtension(2, multigraph1.adjacency_matrix);
+        hamilton::findHamiltonianKExtension(2, multigraph2.adjacency_matrix);
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
     }

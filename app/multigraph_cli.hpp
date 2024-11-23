@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <filesystem>
 #include <CLI/CLI.hpp>
+#include <hamilton.hpp>
 
 using AdjacencyMatrix = std::vector<std::vector<std::size_t>>;
 
