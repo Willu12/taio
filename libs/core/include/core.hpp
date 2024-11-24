@@ -22,6 +22,8 @@ class multiGraph {
     std::vector<vertex> getNeighbours(vertex v) const;
     multiGraph inducedSubgraph(const std::vector<vertex>& vertices) const;
     multiGraph KGraph(unsigned int k) const;
+    std::vector<std::vector<std::size_t>> getAdjacencyMatrix() const;
+    std::size_t vertexCount() const;
 };
 
 } // namespace core

@@ -1,4 +1,5 @@
 #include "core.hpp"
+#include <mutex>
 #include <vector>
 #include <numeric>
 namespace core
@@ -10,6 +11,9 @@ multiGraph::multiGraph(const std::vector<std::vector<std::size_t>>& adjacencyMat
 
 multiGraph::multiGraph(const core::multiGraph& multiGraph) {
     this->adjacencyMatrix = multiGraph.adjacencyMatrix;
+}
+std::size_t multiGraph::vertexCount() const {
+    return this->adjacencyMatrix.size();
 }
 
 std::size_t multiGraph::size() const {
@@ -24,8 +28,8 @@ std::size_t multiGraph::size() const {
 
 std::vector<vertex> multiGraph::getNeighbours(vertex v) const {
     std::vector<vertex> neighbours;
-    for (auto u : this->adjacencyMatrix[v]) {
-        if (u > 0) neighbours.push_back(u);
+    for (int i = 0; i < this->adjacencyMatrix[v].size(); i++) {
+        if (this->adjacencyMatrix[v][i] > 0) neighbours.push_back(i);
     }
     return neighbours;
 }
@@ -72,6 +76,10 @@ multiGraph multiGraph::KGraph(unsigned int k) const {
         }
     }
     return G;
+}
+
+std::vector<std::vector<std::size_t>> multiGraph::getAdjacencyMatrix() const {
+    return this->adjacencyMatrix;
 }
 
 } // namespace core

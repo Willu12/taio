@@ -1,4 +1,7 @@
 #include "multigraph_cli.hpp"
+#include "core.hpp"
+#include "max_cycle.hpp"
+#include "strongly_connected_components.hpp"
 
 MultigraphCLI::MultigraphCLI() {
     app_.description("Compares multigraphs from files.");
@@ -9,11 +12,13 @@ MultigraphCLI::MultigraphCLI() {
     app_.add_option("-i,--index1", input1_.index, "Index of the multigraph in the first file (default: 0)")
         ->default_val(0);
 
+    /*
     app_.add_option("file2", input2_.filepath, "Path to the second multigraph file")
         ->required()
         ->check(CLI::ExistingFile);
     app_.add_option("-j,--index2", input2_.index, "Index of the multigraph in the second file (default: 0)")
         ->default_val(0);
+    */
 
     app_.footer("Example:\n"
                 "  ./multigraph_comparator file1.txt file1.txt -i 0 -j 1 \n"
@@ -33,12 +38,15 @@ void MultigraphCLI::run() const {
         const auto multigraphs1 = load_multigraphs(input1_.filepath);
         const auto multigraph1 = get_multigraph(input1_, multigraphs1);
 
-        const auto multigraph2 = (input1_.filepath == input2_.filepath)
-                                     ? get_multigraph(input2_, multigraphs1)
-                                     : get_multigraph(input2_, load_multigraphs(input2_.filepath));
-
+        /* const auto multigraph2 = (input1_.filepath == input2_.filepath)
+                                      ? get_multigraph(input2_, multigraphs1)
+                                      : get_multigraph(input2_, load_multigraphs(input2_.filepath));
+     */
         print_multigraph(multigraph1);
-        print_multigraph(multigraph2);
+        // print_multigraph(multigraph2);
+        auto maxCycleFinder = cycleFinder::StronglyConnectedComponents(multigraph1.multiGraph);
+        auto cycles = maxCycleFinder.solve();
+        print_cycles(cycles);
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
@@ -108,16 +116,26 @@ Multigraph MultigraphCLI::get_multigraph(const Multigraph& input, const std::vec
         throw std::out_of_range("Index " + std::to_string(input.index) + " out of range for file " + input.filepath);
     }
 
-    return Multigraph{input.filepath, input.index, multigraphs[input.index]};
+    return Multigraph{input.filepath, input.index, core::multiGraph(multigraphs[input.index])};
 }
 
 void MultigraphCLI::print_multigraph(const Multigraph& multigraph) {
     std::cout << "Multigraph from file: " << multigraph.filepath << ", Index: " << multigraph.index << "\n";
-    for (const auto& row : multigraph.adjacency_matrix) {
+    for (const auto& row : multigraph.multiGraph.getAdjacencyMatrix()) {
         for (auto value : row) {
             std::cout << value << " ";
         }
         std::cout << "\n";
     }
     std::cout << "\n";
+}
+
+void MultigraphCLI::print_cycles(const std::vector<std::vector<vertex>>& cycles) {
+    std::cout << "Found Cycles: \n";
+    for (const auto& cycle : cycles) {
+        for (auto vertex : cycle) {
+            std::cout << vertex << " ";
+        }
+        std::cout << "\n";
+    }
 }

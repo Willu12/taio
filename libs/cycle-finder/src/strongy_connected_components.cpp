@@ -15,10 +15,9 @@ StronglyConnectedComponents::StronglyConnectedComponents(const core::multiGraph&
 }
 
 std::vector<std::vector<vertex>> StronglyConnectedComponents::solve() {
-    for (vertex v = 0; v < multiGraph.size(); v++) {
+    for (vertex v = 0; v < multiGraph.vertexCount(); v++) {
         if (!visited[v]) processVertex(v);
     }
-
     return stronglyConnectedComponents;
 }
 
@@ -38,17 +37,18 @@ void StronglyConnectedComponents::processVertex(vertex v) {
             low[v] = std::min(low[v], low[child]);
         }
     }
-
     if (visitedTime[v] != low[v]) return;
     auto scc = std::vector<vertex>();
 
     vertex u;
-    do {
+    u = stack.top();
+    while (low[u] == low[v] && stack.size() > 0) {
         u = stack.top();
         stack.pop();
+        onStack.erase(u);
         scc.push_back(u);
+    };
 
-    } while (u != v);
     stronglyConnectedComponents.push_back(scc);
 }
 
