@@ -1,4 +1,5 @@
 #pragma once
-namespace cycleFinder {
+namespace cycleFinder
+{
 int findCycle();
 }
