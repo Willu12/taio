@@ -10,6 +10,19 @@ MaxCycle::MaxCycle(const core::multiGraph& multiGraph, unsigned int k)
     this->multiGraph = multiGraph.KGraph(k);
 }
 
+std::vector<std::vector<vertex>> MaxCycle::approximate() {
+    auto cycles = std::vector<std::vector<vertex>>();
+    auto stronglyConnectedComponents = stronglyConnectedComponentsFinder.solve();
+
+    std::size_t maxSize = 0;
+    for (const auto& stronglyConnectedComponent : stronglyConnectedComponents)
+        maxSize = maxSize > stronglyConnectedComponent.size() ? maxSize : stronglyConnectedComponent.size();
+
+    for (const auto& stronglyConnectedComponent : stronglyConnectedComponents)
+        if (stronglyConnectedComponent.size() == maxSize) cycles.push_back(stronglyConnectedComponent);
+    return cycles;
+}
+
 std::vector<std::vector<vertex>> MaxCycle::solve() {
     auto cycles = std::vector<std::vector<vertex>>();
     auto stronglyConnectedComponents = stronglyConnectedComponentsFinder.solve();

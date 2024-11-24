@@ -26,5 +26,6 @@ class MaxCycle {
   public:
     MaxCycle(const core::multiGraph& multiGraph, unsigned int k);
     std::vector<std::vector<vertex>> solve();
+    std::vector<std::vector<vertex>> approximate();
 };
 } // namespace cycleFinder
