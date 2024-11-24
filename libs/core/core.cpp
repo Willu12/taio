@@ -18,4 +18,12 @@ std::size_t multiGraph::size() const {
     return size;
 }
 
+std::size_t multiGraph::vertexCount() const {
+    return adjacencyMatrix.size();
+}
+
+std::size_t multiGraph::edgeCount(std::size_t from, std::size_t to) const {
+    return adjacencyMatrix[from][to];
+}
+
 } // namespace core
