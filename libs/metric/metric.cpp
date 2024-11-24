@@ -3,12 +3,16 @@
 #include <numeric>
 #include <algorithm>
 #include <vector>
+#include <ranges>
+
+namespace metric
+{
 
 inline static std::size_t absDiff(std::size_t a, std::size_t b) {
     return a > b ? a - b : b - a;
 }
 
-std::size_t metric::ExactMetric::operator()(const core::multiGraph& G, const core::multiGraph& H) const {
+std::size_t ExactMetric::operator()(const core::multiGraph& G, const core::multiGraph& H) const {
     if (G.vertexCount() < H.vertexCount()) return this->operator()(H, G);
 
     auto n = G.vertexCount();
@@ -33,7 +37,10 @@ std::size_t metric::ExactMetric::operator()(const core::multiGraph& G, const cor
     return n - m + minEdgeDifference;
 }
 
-std::size_t metric::HeuristicMetric::operator()(const core::multiGraph& G, const core::multiGraph& H) const {
+HeuristicMetric::HeuristicMetric(bool useCountingSort) : _useCountingSort(useCountingSort) {
+}
+
+std::size_t HeuristicMetric::operator()(const core::multiGraph& G, const core::multiGraph& H) const {
     if (G.vertexCount() < H.vertexCount()) return this->operator()(H, G);
 
     auto n = G.vertexCount();
@@ -52,13 +59,47 @@ std::size_t metric::HeuristicMetric::operator()(const core::multiGraph& G, const
         degH[v] = 0;
     }
 
-    std::sort(degG.begin(), degG.begin() + n, std::greater<>());
-    std::sort(degH.begin(), degH.begin() + m, std::greater<>());
+    if (_useCountingSort) return n - m + edgeDifferenceCount(degG, degH);
+
+    return n - m + edgeDifferenceCompare(degG, degH);
+}
+
+std::size_t HeuristicMetric::edgeDifferenceCompare(std::vector<std::size_t>& degG,
+                                                   std::vector<std::size_t>& degH) const {
+    std::sort(degG.begin(), degG.end(), std::greater<>());
+    std::sort(degH.begin(), degH.end(), std::greater<>());
 
     std::size_t edgeDifference = 0;
-    for (std::size_t v = 0; v < n; v++) {
-        edgeDifference += absDiff(degG[v], degH[v]);
+    for (auto [dG, dH] : std::views::zip(degG, degH)) {
+        edgeDifference += absDiff(dG, dH);
+    }
+    return edgeDifference;
+}
+
+std::size_t HeuristicMetric::edgeDifferenceCount(const std::vector<std::size_t>& degG,
+                                                 const std::vector<std::size_t>& degH) const {
+    auto maxDegG = *std::max_element(degG.begin(), degG.end());
+    auto maxDegH = *std::max_element(degH.begin(), degH.end());
+    std::vector<std::size_t> degreeCounterG(maxDegG + 1, 0);
+    std::vector<std::size_t> degreeCounterH(maxDegH + 1, 0);
+
+    for (auto [dG, dH] : std::views::zip(degG, degH)) {
+        degreeCounterG[dG]++;
+        degreeCounterH[dH]++;
     }
 
-    return n - m + edgeDifference;
+    std::size_t edgeDifference = 0;
+    for (std::size_t degIterG = 0, degIterH = 0; degIterG <= maxDegG && degIterH <= maxDegH;
+         degIterG += (degreeCounterG[degIterG] == 0), degIterH += (degreeCounterH[degIterH] == 0)) {
+
+        if (degreeCounterG[degIterG] && degreeCounterH[degIterH]) {
+            edgeDifference += absDiff(degIterG, degIterH);
+
+            degreeCounterG[degIterG]--;
+            degreeCounterH[degIterH]--;
+        }
+    }
+    return edgeDifference;
 }
+
+} // namespace metric

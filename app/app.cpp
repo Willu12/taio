@@ -24,8 +24,10 @@ int main() {
     core::multiGraph G(adj1);
     core::multiGraph H(adj2);
     metric::ExactMetric exactMetric;
-    metric::HeuristicMetric heuristicMetric;
+    metric::HeuristicMetric heuristicComparisonMetric(false);
+    metric::HeuristicMetric heuristicCountingMetric(true);
     interfaceTest(exactMetric, G, H);
-    interfaceTest(heuristicMetric, G, H);
+    interfaceTest(heuristicComparisonMetric, G, H);
+    interfaceTest(heuristicCountingMetric, G, H);
     return 0;
 }
