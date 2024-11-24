@@ -23,6 +23,7 @@ std::size_t multiGraph::vertexCount() const {
 }
 
 std::size_t multiGraph::edgeCount(std::size_t from, std::size_t to) const {
+    if (from >= vertexCount() || to >= vertexCount()) return 0;
     return adjacencyMatrix[from][to];
 }
 
