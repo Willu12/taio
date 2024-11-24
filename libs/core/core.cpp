@@ -1,4 +1,5 @@
 #include "core.hpp"
+#include <iostream>
 #include <mutex>
 #include <vector>
 #include <numeric>
@@ -36,13 +37,18 @@ std::vector<vertex> multiGraph::getNeighbours(vertex v) const {
 
 multiGraph::multiGraph(std::size_t size) {
     auto rows = std::vector<std::vector<vertex>>(size);
-    for (auto row : rows) {
-        row = std::vector<vertex>(size);
+    for (int i = 0; i < rows.size(); i++) {
+        auto row = std::vector<vertex>(size);
+        for (int j = 0; j < row.size(); j++) {
+            row[j] = 0;
+        }
+        rows[i] = row;
     }
+    adjacencyMatrix = rows;
 }
 
 void multiGraph::addEdge(vertex u, vertex v) {
-    this->adjacencyMatrix[u][v]++;
+    this->adjacencyMatrix[u][v] = this->adjacencyMatrix[u][v] + 1;
 }
 
 bool multiGraph::hasEdge(vertex u, vertex v) const {
@@ -51,9 +57,9 @@ bool multiGraph::hasEdge(vertex u, vertex v) const {
 
 multiGraph multiGraph::inducedSubgraph(const std::vector<vertex>& vertices) const {
     auto G = multiGraph(vertices.size());
-    for (vertex v : vertices) {
-        for (vertex u : vertices) {
-            for (int i = 0; i < adjacencyMatrix[v][u]; i++) {
+    for (vertex v = 0; v < vertices.size(); v++) {
+        for (vertex u = 0; u < vertices.size(); u++) {
+            for (int i = 0; i < adjacencyMatrix[vertices[v]][vertices[u]]; i++) {
                 G.addEdge(v, u);
             }
         }
@@ -70,8 +76,8 @@ void multiGraph::removeAllEdges(vertex v) {
 multiGraph multiGraph::KGraph(unsigned int k) const {
 
     multiGraph G = multiGraph(*this);
-    for (vertex v = 0; v < G.size(); v++) {
-        for (vertex u = 0; u < G.size(); u++) {
+    for (vertex v = 0; v < G.vertexCount(); v++) {
+        for (vertex u = 0; u < G.vertexCount(); u++) {
             if (G.adjacencyMatrix[v][u] < k) G.adjacencyMatrix[v][u] = 0;
         }
     }

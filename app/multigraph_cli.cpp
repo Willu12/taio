@@ -44,7 +44,7 @@ void MultigraphCLI::run() const {
      */
         print_multigraph(multigraph1);
         // print_multigraph(multigraph2);
-        auto maxCycleFinder = cycleFinder::StronglyConnectedComponents(multigraph1.multiGraph);
+        auto maxCycleFinder = cycleFinder::MaxCycle(multigraph1.multiGraph, 1);
         auto cycles = maxCycleFinder.solve();
         print_cycles(cycles);
 

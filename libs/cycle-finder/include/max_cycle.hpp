@@ -20,7 +20,7 @@ class MaxCycle {
     void processStronglyConnectedComponent(const std::vector<vertex>& stronglyConnectedComponent);
 
     void unblockVertex(vertex v);
-    bool processVertex(vertex v, const core::multiGraph& multiGraph);
+    bool processVertex(vertex v, const core::multiGraph& multiGraph, const std::vector<vertex>& scc);
     void filterMaxCycles();
 
   public:

@@ -6,11 +6,11 @@
 namespace cycleFinder
 {
 StronglyConnectedComponents::StronglyConnectedComponents(const core::multiGraph& multiGraph) : multiGraph(multiGraph) {
-    this->low = std::vector<vertex>(multiGraph.size());
-    this->visited = std::vector<bool>(multiGraph.size());
+    this->low = std::vector<vertex>(multiGraph.vertexCount());
+    this->visited = std::vector<bool>(multiGraph.vertexCount());
     this->onStack = std::set<vertex>();
     this->stack = std::stack<vertex>();
-    this->visitedTime = std::vector<unsigned int>(multiGraph.size());
+    this->visitedTime = std::vector<unsigned int>(multiGraph.vertexCount());
     this->time = 0;
 }
 
@@ -37,13 +37,13 @@ void StronglyConnectedComponents::processVertex(vertex v) {
             low[v] = std::min(low[v], low[child]);
         }
     }
+
     if (visitedTime[v] != low[v]) return;
     auto scc = std::vector<vertex>();
 
-    vertex u;
-    u = stack.top();
-    while (low[u] == low[v] && stack.size() > 0) {
-        u = stack.top();
+    while (stack.size() > 0 && low[stack.top()] == low[v]) {
+        auto u = stack.top();
+
         stack.pop();
         onStack.erase(u);
         scc.push_back(u);

@@ -1,6 +1,7 @@
 #include "core.hpp"
 #include "max_cycle.hpp"
 #include "strongly_connected_components.hpp"
+#include <algorithm>
 #include <vector>
 
 namespace cycleFinder
@@ -26,17 +27,26 @@ std::vector<std::vector<vertex>> MaxCycle::approximate() {
 std::vector<std::vector<vertex>> MaxCycle::solve() {
     auto cycles = std::vector<std::vector<vertex>>();
     auto stronglyConnectedComponents = stronglyConnectedComponentsFinder.solve();
+    auto filteredSCC = std::vector<std::vector<vertex>>();
+    for (const auto& scc : stronglyConnectedComponents) {
+        if (scc.size() > 1) filteredSCC.push_back(scc);
+    }
 
-    while (stronglyConnectedComponents.empty() == false) {
-        leastVertex = stronglyConnectedComponents.front()[0];
-        processStronglyConnectedComponent(stronglyConnectedComponents.front());
+    while (filteredSCC.empty() == false) {
+        auto firstSCC = filteredSCC.front();
+        std::sort(firstSCC.begin(), firstSCC.end());
+        processStronglyConnectedComponent(firstSCC);
+        leastVertex = firstSCC[0];
         multiGraph.removeAllEdges(leastVertex);
         stronglyConnectedComponentsFinder = StronglyConnectedComponents(multiGraph);
         stronglyConnectedComponents = stronglyConnectedComponentsFinder.solve();
+        filteredSCC.clear();
+        for (const auto& scc : stronglyConnectedComponents) {
+            if (scc.size() > 1) filteredSCC.push_back(scc);
+        }
     }
 
     filterMaxCycles();
-
     return maxCycles;
 }
 
@@ -44,27 +54,32 @@ void MaxCycle::processStronglyConnectedComponent(const std::vector<vertex>& scc)
     blocked.clear();
     blockedMap.clear();
     stack.clear();
+
     auto G = multiGraph.inducedSubgraph(scc);
-    processVertex(leastVertex, G);
+    leastVertex = 0;
+    processVertex(leastVertex, G, scc);
 }
 
-bool MaxCycle::processVertex(vertex v, const core::multiGraph& multiGraph) {
+bool MaxCycle::processVertex(vertex v, const core::multiGraph& multiGraph, const std::vector<vertex>& scc) {
     bool foundCycle = false;
+    stack.push_back(v);
+    blocked.insert(v);
 
-    if (stack.empty() == false && v == leastVertex) {
-        std::vector<vertex> cycle = std::vector<vertex>(stack.size() + 1);
-        std::copy(stack.begin(), stack.begin(), cycle.begin());
-        cycle[cycle.size() - 1] = v;
-        cycles.push_back(cycle);
-        foundCycle = true;
-    } else {
-        stack.push_back(v);
-        blocked.insert(v);
+    for (auto neigbhour : multiGraph.getNeighbours(v)) {
+        if (neigbhour == leastVertex) {
 
-        for (auto neigbhour : multiGraph.getNeighbours(v)) {
-            if (!blocked.contains(neigbhour)) foundCycle |= processVertex(neigbhour, multiGraph);
-        }
+            std::vector<vertex> cycle = std::vector<vertex>(stack.size() + 1);
+            for (auto v = 0; v < stack.size(); v++) {
+                cycle[v] = stack[scc[v]];
+            }
+            cycle[cycle.size() - 1] = scc[leastVertex];
+            cycles.push_back(cycle);
+            foundCycle = true;
+
+        } else if (!blocked.contains(neigbhour))
+            foundCycle |= processVertex(neigbhour, multiGraph, scc);
     }
+
     if (foundCycle) {
         unblockVertex(v);
     }
