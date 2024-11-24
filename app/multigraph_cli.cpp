@@ -1,23 +1,34 @@
 #include "multigraph_cli.hpp"
 
 MultigraphCLI::MultigraphCLI() {
-    app_.description("Compares multigraphs from files.");
+    app_.description("CLI tool for working with multigraphs.");
 
-    app_.add_option("file1", input1_.filepath, "Path to the first multigraph file")
+    // "compare" subcommand
+    auto* compare_cmd = app_.add_subcommand("compare", "Compares multigraphs from files.");
+    compare_cmd->add_option("file1", input1_.filepath, "Path to the first multigraph file")
         ->required()
         ->check(CLI::ExistingFile);
-    app_.add_option("-i,--index1", input1_.index, "Index of the multigraph in the first file (default: 0)")
+    compare_cmd->add_option("-i,--index1", input1_.index, "Index of the multigraph in the first file (default: 0)")
         ->default_val(0);
-
-    app_.add_option("file2", input2_.filepath, "Path to the second multigraph file")
+    compare_cmd->add_option("file2", input2_.filepath, "Path to the second multigraph file")
         ->required()
         ->check(CLI::ExistingFile);
-    app_.add_option("-j,--index2", input2_.index, "Index of the multigraph in the second file (default: 0)")
+    compare_cmd->add_option("-j,--index2", input2_.index, "Index of the multigraph in the second file (default: 0)")
         ->default_val(0);
+
+    // "find_hamiltonian_extension" subcommand
+    auto* find_hamiltonian_cmd = app_.add_subcommand("find_hamiltonian_extension", "Finds k-Hamiltonian extension for a graph.");
+    find_hamiltonian_cmd->add_option("filepath", input1_.filepath, "Path to the multigraph file")
+        ->required()
+        ->check(CLI::ExistingFile);
+    find_hamiltonian_cmd->add_option("-i,--index", input1_.index, "Index of the multigraph in the file (default: 0)")
+        ->default_val(0);
+    find_hamiltonian_cmd->add_option("-k", k_, "Value for k in findHamiltonianKExtension (default: 1)")
+        ->default_val(1);
 
     app_.footer("Example:\n"
-                "  ./multigraph_comparator file1.txt file1.txt -i 0 -j 1 \n"
-                "  ./multigraph_comparator file1.txt file2.txt");
+                "  ./multigraph_cli compare file1.txt file2.txt -i 0 -j 1\n"
+                "  ./multigraph_cli find_hamiltonian_extension graph.txt -i 0 -k 2");
 }
 
 void MultigraphCLI::parse(int argc, char** argv) {
@@ -30,19 +41,30 @@ int MultigraphCLI::exit(const CLI::ParseError& e) {
 
 void MultigraphCLI::run() const {
     try {
-        const auto multigraphs1 = load_multigraphs(input1_.filepath);
-        const auto multigraph1 = get_multigraph(input1_, multigraphs1);
+        if (app_.got_subcommand("compare")) {
+            // Handle the "compare" subcommand
+            const auto multigraphs1 = load_multigraphs(input1_.filepath);
+            const auto multigraph1 = get_multigraph(input1_, multigraphs1);
 
-        const auto multigraph2 = (input1_.filepath == input2_.filepath)
-                                     ? get_multigraph(input2_, multigraphs1)
-                                     : get_multigraph(input2_, load_multigraphs(input2_.filepath));
+            const auto multigraph2 = (input1_.filepath == input2_.filepath)
+                                         ? get_multigraph(input2_, multigraphs1)
+                                         : get_multigraph(input2_, load_multigraphs(input2_.filepath));
 
-        print_multigraph(multigraph1);
-        print_multigraph(multigraph2);
+            print_multigraph(multigraph1);
+            print_multigraph(multigraph2);
 
-        hamilton::findHamiltonianKExtension(2, multigraph1.adjacency_matrix);
-        hamilton::findHamiltonianKExtension(2, multigraph2.adjacency_matrix);
+            throw std::runtime_error("Not implemented yet!");
+        } else if (app_.got_subcommand("find_hamiltonian_extension")) {
+            // Handle the "find_hamiltonian_extension" subcommand
+            const auto multigraphs = load_multigraphs(input1_.filepath);
+            const auto multigraph = get_multigraph(input1_, multigraphs);
 
+            print_multigraph(multigraph);
+
+            hamilton::findHamiltonianKExtension(k_, multigraph.adjacency_matrix);
+        } else {
+            throw std::runtime_error("No valid subcommand specified.");
+        }
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
     }
@@ -124,3 +146,4 @@ void MultigraphCLI::print_multigraph(const Multigraph& multigraph) {
     }
     std::cout << "\n";
 }
+

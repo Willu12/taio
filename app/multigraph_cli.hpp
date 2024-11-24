@@ -6,10 +6,10 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <stdexcept>
 #include <filesystem>
 #include <CLI/CLI.hpp>
 #include <hamilton.hpp>
+#include <stdexcept>
 
 using AdjacencyMatrix = std::vector<std::vector<std::size_t>>;
 
@@ -30,6 +30,7 @@ class MultigraphCLI {
     CLI::App app_{"TAiO: Multigraph Comparator"};
     Multigraph input1_{"", 0, {}};
     Multigraph input2_{"", 0, {}};
+    std::size_t k_ = 1;
 
     static std::vector<AdjacencyMatrix> parse_all_multigraphs(std::istream& input);
     static std::vector<AdjacencyMatrix> load_multigraphs(const std::string& filepath);
