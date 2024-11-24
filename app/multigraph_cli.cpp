@@ -17,7 +17,7 @@ MultigraphCLI::MultigraphCLI() {
         ->default_val(0);
 
     // "find_hamiltonian_extension" subcommand
-    auto* find_hamiltonian_cmd = app_.add_subcommand("find_hamiltonian_extension", "Finds k-Hamiltonian extension for a graph.");
+    auto* find_hamiltonian_cmd = app_.add_subcommand("find_hamiltonian_extension", "Finds minimal k-Hamiltonian extension for a graph.");
     find_hamiltonian_cmd->add_option("filepath", input1_.filepath, "Path to the multigraph file")
         ->required()
         ->check(CLI::ExistingFile);
@@ -61,7 +61,7 @@ void MultigraphCLI::run() const {
 
             print_multigraph(multigraph);
 
-            hamilton::findHamiltonianKExtension(k_, multigraph.adjacency_matrix);
+            hamilton::findKHamiltonianExtension(k_, multigraph.adjacency_matrix);
         } else {
             throw std::runtime_error("No valid subcommand specified.");
         }

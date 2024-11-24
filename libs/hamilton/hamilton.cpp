@@ -3,7 +3,7 @@
 
 namespace hamilton
 {
-std::vector<std::vector<std::size_t>> findHamiltonianKExtension(std::size_t k,
+std::vector<std::vector<std::size_t>> findKHamiltonianExtension(std::size_t k,
                                                                 std::vector<std::vector<std::size_t>> multiGraph) {
     ATSPSolver::Matrix cost(multiGraph);
     for (int i = 0; i < cost.size(); ++i) {

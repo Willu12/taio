@@ -1,6 +1,6 @@
 # TAiO
 
-University course project that provides a CLI for multigraph (graph theory) operations, including comparison and finding Hamiltonian \(k\)-extensions.
+University course project that provides a CLI for multigraph (graph theory) operations, including comparison and finding minimal \(k\)-Hamiltonian extensions.
 
 ---
 
@@ -71,7 +71,7 @@ The CLI has two subcommands: `compare` and `find_hamiltonian_extension`.
 
 ---
 
-#### **`find_hamiltonian_extension`**: Finds Hamiltonian \(k\)-extensions for a multigraph.
+#### **`find_hamiltonian_extension`**: Finds minimal \(k\)-Hamiltonian extensions for a multigraph.
 ```bash
 ./multigraph_cli find_hamiltonian_extension [OPTIONS] filepath
 ```
@@ -86,7 +86,7 @@ The CLI has two subcommands: `compare` and `find_hamiltonian_extension`.
 - `-i,--index` `<uint>`
   Index of the multigraph in the file (default: 0).
 - `-k` `<uint>`
-  Value for \(k\) in the Hamiltonian \(k\)-extension (default: 1).
+  Value for \(k\) in the minimal \(k\)-Hamiltonian extension (default: 1).
 
 ##### **Example**
 ```bash
@@ -96,7 +96,7 @@ The CLI has two subcommands: `compare` and `find_hamiltonian_extension`.
 
 ---
 
-### Input Format
+### Multigraph Input Format
 
 Multigraphs are saved using their adjacency matrix in the following format:
 
@@ -144,17 +144,4 @@ This file defines two multigraphs:
    2 0 1
    1 0 0
    ```
-
----
-
-### Example Usage
-#### Compare Two Multigraphs
-```bash
-./multigraph_cli compare file1.txt file2.txt -i 0 -j 1
-```
-
-#### Find Hamiltonian \(k\)-Extension
-```bash
-./multigraph_cli find_hamiltonian_extension graph.txt -i 0 -k 3
-```
 
