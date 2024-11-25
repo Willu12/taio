@@ -7,19 +7,19 @@ namespace cycleFinder
 {
 class StronglyConnectedComponents {
   private:
-    std::vector<vertex> low;
-    std::set<vertex> onStack;
-    std::stack<vertex> stack;
-    std::vector<bool> visited;
-    std::vector<unsigned int> visitedTime;
-    std::vector<std::vector<vertex>> stronglyConnectedComponents;
-    core::multiGraph multiGraph;
-    unsigned int time;
+    std::vector<vertex> low_;
+    std::set<vertex> onStack_;
+    std::stack<vertex> stack_;
+    std::vector<bool> visited_;
+    std::vector<unsigned int> visitedTime_;
+    std::vector<std::vector<vertex>> stronglyConnectedComponents_;
+    core::Multigraph multiGraph_;
+    unsigned int time_ = 0;
 
     void processVertex(vertex v);
 
   public:
-    StronglyConnectedComponents(const core::multiGraph& multiGraph);
+    StronglyConnectedComponents(const core::Multigraph& multiGraph_);
     std::vector<std::vector<vertex>> solve();
 };
 } // namespace cycleFinder

@@ -17,7 +17,7 @@ using AdjacencyMatrix = std::vector<std::vector<std::size_t>>;
 struct Multigraph {
     std::string filepath;
     std::size_t index;
-    core::multiGraph multiGraph;
+    core::Multigraph multiGraph;
 };
 
 class MultigraphCLI {
@@ -29,8 +29,8 @@ class MultigraphCLI {
 
   private:
     CLI::App app_{"TAiO: Multigraph Comparator"};
-    Multigraph input1_{"", 0, core::multiGraph(0)};
-    Multigraph input2_{"", 0, core::multiGraph(0)};
+    Multigraph input1_{"", 0, core::Multigraph(0)};
+    Multigraph input2_{"", 0, core::Multigraph(0)};
 
     static std::vector<AdjacencyMatrix> parse_all_multigraphs(std::istream& input);
     static std::vector<AdjacencyMatrix> load_multigraphs(const std::string& filepath);

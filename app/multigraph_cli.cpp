@@ -117,7 +117,7 @@ Multigraph MultigraphCLI::get_multigraph(const Multigraph& input, const std::vec
         throw std::out_of_range("Index " + std::to_string(input.index) + " out of range for file " + input.filepath);
     }
 
-    return Multigraph{input.filepath, input.index, core::multiGraph(multigraphs[input.index])};
+    return Multigraph{input.filepath, input.index, core::Multigraph(multigraphs[input.index])};
 }
 
 void MultigraphCLI::print_multigraph(const Multigraph& multigraph) {
