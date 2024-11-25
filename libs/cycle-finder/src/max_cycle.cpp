@@ -25,7 +25,7 @@ std::vector<std::vector<vertex>> MaxCycle::approximate() {
 }
 
 std::vector<std::vector<vertex>> MaxCycle::solve() {
-    auto cycles = std::vector<std::vector<vertex>>();
+
     auto stronglyConnectedComponents = stronglyConnectedComponentsFinder.solve();
     auto filteredSCC = std::vector<std::vector<vertex>>();
     for (const auto& scc : stronglyConnectedComponents) {
@@ -67,10 +67,9 @@ bool MaxCycle::processVertex(vertex v, const core::multiGraph& multiGraph, const
 
     for (auto neigbhour : multiGraph.getNeighbours(v)) {
         if (neigbhour == leastVertex) {
-
             std::vector<vertex> cycle = std::vector<vertex>(stack.size() + 1);
             for (auto v = 0; v < stack.size(); v++) {
-                cycle[v] = stack[scc[v]];
+                cycle[v] = scc[stack[v]];
             }
             cycle[cycle.size() - 1] = scc[leastVertex];
             cycles.push_back(cycle);
@@ -104,6 +103,7 @@ void MaxCycle::unblockVertex(vertex v) {
             unblockVertex(u);
         }
     }
+    blockedMap.erase(v);
 }
 
 void MaxCycle::filterMaxCycles() {

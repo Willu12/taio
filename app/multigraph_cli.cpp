@@ -46,7 +46,8 @@ void MultigraphCLI::run() const {
         // print_multigraph(multigraph2);
         auto maxCycleFinder = cycleFinder::MaxCycle(multigraph1.multiGraph, 1);
         auto cycles = maxCycleFinder.solve();
-        print_cycles(cycles);
+        std::cout << "found " << cycles.size() << " cycles\n";
+        // print_cycles(cycles);
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";

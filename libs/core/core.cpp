@@ -68,7 +68,7 @@ multiGraph multiGraph::inducedSubgraph(const std::vector<vertex>& vertices) cons
 }
 
 void multiGraph::removeAllEdges(vertex v) {
-    for (vertex u = 0; u < this->size(); u++) {
+    for (vertex u = 0; u < this->vertexCount(); u++) {
         adjacencyMatrix[v][u] = adjacencyMatrix[u][v] = 0;
     }
 }
