@@ -1,5 +1,7 @@
 #include "core.hpp"
 #include <vector>
+#include <numeric>
+
 namespace core
 {
 
@@ -74,6 +76,14 @@ Multigraph Multigraph::kGraph(unsigned int k) const {
 
 std::vector<std::vector<std::size_t>> Multigraph::getAdjacencyMatrix() const {
     return this->adjacencyMatrix;
+}
+
+std::size_t Multigraph::edgeCount(std::size_t from, std::size_t to) const {
+    return adjacencyMatrix[from][to];
+}
+
+std::size_t Multigraph::outDegree(std::size_t vertex) const {
+    return std::accumulate(adjacencyMatrix[vertex].begin(), adjacencyMatrix[vertex].end(), (std::size_t)0);
 }
 
 } // namespace core
