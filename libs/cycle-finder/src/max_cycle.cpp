@@ -71,15 +71,17 @@ bool MaxCycle::processVertex(vertex v, const core::multiGraph& multiGraph, const
 
     for (auto neigbhour : multiGraph.getNeighbours(v)) {
         if (neigbhour == leastVertex) {
+            foundCycle = true;
+
             std::vector<vertex> cycle = std::vector<vertex>(stack.size() + 1);
             for (auto v = 0; v < stack.size(); v++) {
                 cycle[v] = scc[stack[v]];
             }
             cycle[cycle.size() - 1] = scc[leastVertex];
-            if (cycle.size() > maxCycleSize) maxCycleSize = cycle.size();
-
-            cycles.push_back(cycle);
-            foundCycle = true;
+            if (cycle.size() > maxCycleSize) {
+                maxCycleSize = cycle.size();
+                cycles.push_back(cycle);
+            }
 
         } else if (!blocked.contains(neigbhour))
             foundCycle |= processVertex(neigbhour, multiGraph, scc);
