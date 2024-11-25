@@ -1,5 +1,4 @@
 #include "include/atsp_solver.hpp"
-#include <algorithm>
 
 namespace hamilton
 {
