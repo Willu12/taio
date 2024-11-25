@@ -7,12 +7,12 @@ namespace metric
 
 class Metric {
   public:
-    virtual std::size_t operator()(const core::multiGraph& G, const core::multiGraph& H) const = 0;
+    virtual std::size_t operator()(const core::Multigraph& G, const core::Multigraph& H) const = 0;
 };
 
 class ExactMetric : public Metric {
   public:
-    std::size_t operator()(const core::multiGraph& G, const core::multiGraph& H) const override;
+    std::size_t operator()(const core::Multigraph& G, const core::Multigraph& H) const override;
 };
 
 class HeuristicMetric : public Metric {
@@ -23,7 +23,7 @@ class HeuristicMetric : public Metric {
 
   public:
     HeuristicMetric(bool useCountingSort);
-    std::size_t operator()(const core::multiGraph& G, const core::multiGraph& H) const override;
+    std::size_t operator()(const core::Multigraph& G, const core::Multigraph& H) const override;
 };
 
 } // namespace metric

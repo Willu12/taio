@@ -12,7 +12,7 @@ inline static std::size_t absDiff(std::size_t a, std::size_t b) {
     return a > b ? a - b : b - a;
 }
 
-std::size_t ExactMetric::operator()(const core::multiGraph& G, const core::multiGraph& H) const {
+std::size_t ExactMetric::operator()(const core::Multigraph& G, const core::Multigraph& H) const {
     if (G.vertexCount() < H.vertexCount()) return this->operator()(H, G);
 
     auto n = G.vertexCount();
@@ -40,7 +40,7 @@ std::size_t ExactMetric::operator()(const core::multiGraph& G, const core::multi
 HeuristicMetric::HeuristicMetric(bool useCountingSort) : _useCountingSort(useCountingSort) {
 }
 
-std::size_t HeuristicMetric::operator()(const core::multiGraph& G, const core::multiGraph& H) const {
+std::size_t HeuristicMetric::operator()(const core::Multigraph& G, const core::Multigraph& H) const {
     if (G.vertexCount() < H.vertexCount()) return this->operator()(H, G);
 
     auto n = G.vertexCount();
