@@ -9,6 +9,7 @@ namespace cycleFinder
 MaxCycle::MaxCycle(const core::multiGraph& multiGraph, unsigned int k)
     : multiGraph(multiGraph), k(k), stronglyConnectedComponentsFinder(multiGraph) {
     this->multiGraph = multiGraph.KGraph(k);
+    this->maxCycleSize = 0;
 }
 
 std::vector<std::vector<vertex>> MaxCycle::approximate() {
@@ -31,9 +32,12 @@ std::vector<std::vector<vertex>> MaxCycle::solve() {
     for (const auto& scc : stronglyConnectedComponents) {
         if (scc.size() > 1) filteredSCC.push_back(scc);
     }
+    std::sort(stronglyConnectedComponents.begin(), stronglyConnectedComponents.end(),
+              [](const std::vector<vertex>& a, const std::vector<vertex>& b) { return a.size() > b.size(); });
 
     while (filteredSCC.empty() == false) {
         auto firstSCC = filteredSCC.front();
+        if (firstSCC.size() <= maxCycleSize) break;
         std::sort(firstSCC.begin(), firstSCC.end());
         processStronglyConnectedComponent(firstSCC);
         leastVertex = firstSCC[0];
@@ -72,6 +76,8 @@ bool MaxCycle::processVertex(vertex v, const core::multiGraph& multiGraph, const
                 cycle[v] = scc[stack[v]];
             }
             cycle[cycle.size() - 1] = scc[leastVertex];
+            if (cycle.size() > maxCycleSize) maxCycleSize = cycle.size();
+
             cycles.push_back(cycle);
             foundCycle = true;
 
@@ -107,12 +113,9 @@ void MaxCycle::unblockVertex(vertex v) {
 }
 
 void MaxCycle::filterMaxCycles() {
-    std::size_t maxSize = 0;
-    for (const auto& cycle : cycles)
-        maxSize = maxSize > cycle.size() ? maxSize : cycle.size();
 
     for (const auto& cycle : cycles) {
-        if (cycle.size() == maxSize) maxCycles.push_back(cycle);
+        if (cycle.size() == maxCycleSize) maxCycles.push_back(cycle);
     }
 }
 

@@ -1,8 +1,5 @@
 #include "core.hpp"
-#include <iostream>
-#include <mutex>
 #include <vector>
-#include <numeric>
 namespace core
 {
 

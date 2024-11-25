@@ -17,6 +17,7 @@ class MaxCycle {
     StronglyConnectedComponents stronglyConnectedComponentsFinder;
     vertex leastVertex;
     unsigned int k;
+    std::size_t maxCycleSize;
     void processStronglyConnectedComponent(const std::vector<vertex>& stronglyConnectedComponent);
 
     void unblockVertex(vertex v);
