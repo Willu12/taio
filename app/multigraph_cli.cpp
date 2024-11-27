@@ -102,11 +102,7 @@ void MultigraphCLI::execute_find_hamiltonian_extension() const {
 
     print_multigraph(multigraph);
 
-    if (approx_) {
-        throw std::runtime_error("Approximation not implemented.");
-    } else {
-        hamilton::findKHamiltonianExtension(k_, multigraph.multiGraph);
-    }
+    hamilton::findKHamiltonianExtension(k_, multigraph.multiGraph, approx_);
 }
 
 void MultigraphCLI::execute_find_max_cycles() const {
