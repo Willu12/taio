@@ -1,7 +1,7 @@
 #ifndef MULTIGRAPHCLI_HPP
 #define MULTIGRAPHCLI_HPP
 
-#include "core.hpp"
+#include <cstddef>
 #include <iostream>
 #include <fstream>
 #include <memory>
@@ -10,6 +10,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <filesystem>
+#include "core.hpp"
 #include <CLI/CLI.hpp>
 
 using AdjacencyMatrix = std::vector<std::vector<std::size_t>>;
@@ -31,6 +32,18 @@ class MultigraphCLI {
     CLI::App app_{"TAiO: Multigraph Comparator"};
     Multigraph input1_{"", 0, core::Multigraph(0)};
     Multigraph input2_{"", 0, core::Multigraph(0)};
+    Multigraph input0_{"", 0, core::Multigraph(0)};
+    std::size_t k_{1};
+    bool approx_{false};
+    bool countSort_{false};
+
+    void init_compare_command();
+    void init_find_hamiltonian_extension_command();
+    void init_find_max_cycles_command();
+
+    void execute_compare() const;
+    void execute_find_hamiltonian_extension() const;
+    void execute_find_max_cycles() const;
 
     static std::vector<AdjacencyMatrix> parse_all_multigraphs(std::istream& input);
     static std::vector<AdjacencyMatrix> load_multigraphs(const std::string& filepath);
