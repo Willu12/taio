@@ -2,27 +2,22 @@
 #include "core.hpp"
 #include "max_cycle.hpp"
 #include "strongly_connected_components.hpp"
+#include "hamilton.hpp"
+#include "metric.hpp"
+#include <iostream>
+#include <memory>
+#include <stdexcept>
 
 MultigraphCLI::MultigraphCLI() {
-    app_.description("Compares multigraphs from files.");
-
-    app_.add_option("file1", input1_.filepath, "Path to the first multigraph file")
-        ->required()
-        ->check(CLI::ExistingFile);
-    app_.add_option("-i,--index1", input1_.index, "Index of the multigraph in the first file (default: 0)")
-        ->default_val(0);
-
-    /*
-    app_.add_option("file2", input2_.filepath, "Path to the second multigraph file")
-        ->required()
-        ->check(CLI::ExistingFile);
-    app_.add_option("-j,--index2", input2_.index, "Index of the multigraph in the second file (default: 0)")
-        ->default_val(0);
-    */
+    app_.description("CLI tool for working with multigraphs.");
+    init_compare_command();
+    init_find_hamiltonian_extension_command();
+    init_find_max_cycles_command();
 
     app_.footer("Example:\n"
-                "  ./multigraph_comparator file1.txt file1.txt -i 0 -j 1 \n"
-                "  ./multigraph_comparator file1.txt file2.txt");
+                "  ./app compare file0.txt file1.txt -i 0 -j 1\n"
+                "  ./app find_hamiltonian_extension graph.txt -i 0 -k 2\n"
+                "  ./app find_max_cycles graph.txt -i 0 -k 2");
 }
 
 void MultigraphCLI::parse(int argc, char** argv) {
@@ -35,23 +30,95 @@ int MultigraphCLI::exit(const CLI::ParseError& e) {
 
 void MultigraphCLI::run() const {
     try {
-        const auto multigraphs1 = load_multigraphs(input1_.filepath);
-        const auto multigraph1 = get_multigraph(input1_, multigraphs1);
-
-        /* const auto multigraph2 = (input1_.filepath == input2_.filepath)
-                                      ? get_multigraph(input2_, multigraphs1)
-                                      : get_multigraph(input2_, load_multigraphs(input2_.filepath));
-     */
-        print_multigraph(multigraph1);
-        // print_multigraph(multigraph2);
-        auto maxCycleFinder = cycleFinder::MaxCycle(multigraph1.multiGraph, 1);
-        auto cycles = maxCycleFinder.solve();
-        std::cout << "found " << cycles.size() << " cycles\n";
-        // print_cycles(cycles);
-
+        if (app_.got_subcommand("compare")) {
+            execute_compare();
+        } else if (app_.got_subcommand("find_hamiltonian_extension")) {
+            execute_find_hamiltonian_extension();
+        } else if (app_.got_subcommand("find_max_cycles")) {
+            execute_find_max_cycles();
+        } else {
+            throw std::runtime_error("No valid subcommand specified.");
+        }
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
     }
+}
+
+void MultigraphCLI::init_compare_command() {
+    auto* cmd = app_.add_subcommand("compare", "Calculate metric of given multigraphs.");
+    cmd->add_option("file0", input1_.filepath, "Path to the first multigraph file")
+        ->required()
+        ->check(CLI::ExistingFile);
+    cmd->add_option("-i,--index0", input1_.index, "Index of the multigraph in the first file")->default_val(0);
+    cmd->add_option("file1", input2_.filepath, "Path to the second multigraph file")
+        ->required()
+        ->check(CLI::ExistingFile);
+    cmd->add_option("-j,--index1", input2_.index, "Index of the multigraph in the second file")->default_val(0);
+    cmd->add_flag("--approx", approx_, "Use heuristic metric");
+    cmd->add_flag("--counting-sort", countSort_, "Use counting sort in heuristic metric");
+}
+
+void MultigraphCLI::init_find_hamiltonian_extension_command() {
+    auto* cmd = app_.add_subcommand("find_hamiltonian_extension", "Find minimal k-Hamiltonian extension.");
+    cmd->add_option("filepath", input0_.filepath, "Path to the multigraph file")->required()->check(CLI::ExistingFile);
+    cmd->add_option("-i,--index", input0_.index, "Index of the multigraph in the file")->default_val(0);
+    cmd->add_option("-k", k_, "Value for k in findHamiltonianKExtension")->default_val(1);
+    cmd->add_flag("--approx", approx_, "Use approximation algorithm");
+}
+
+void MultigraphCLI::init_find_max_cycles_command() {
+    auto* cmd = app_.add_subcommand("find_max_cycles", "Find all max k-cycles of a multigraph.");
+    cmd->add_option("filepath", input0_.filepath, "Path to the multigraph file")->required()->check(CLI::ExistingFile);
+    cmd->add_option("-i,--index", input0_.index, "Index of the multigraph in the file")->default_val(0);
+    cmd->add_option("-k", k_, "Value for k in max cycle finding")->default_val(1);
+    cmd->add_flag("--approx", approx_, "Use approximation algorithm");
+}
+
+void MultigraphCLI::execute_compare() const {
+    const auto multigraphs0 = load_multigraphs(input1_.filepath);
+    const auto multigraph0 = get_multigraph(input1_, multigraphs0);
+
+    const auto multigraph1 = (input1_.filepath == input2_.filepath)
+                                 ? get_multigraph(input2_, multigraphs0)
+                                 : get_multigraph(input2_, load_multigraphs(input2_.filepath));
+
+    print_multigraph(multigraph0);
+    print_multigraph(multigraph1);
+
+    std::unique_ptr<metric::Metric> solver;
+    if (approx_) {
+        solver = std::make_unique<metric::HeuristicMetric>(countSort_);
+    } else {
+        solver = std::make_unique<metric::ExactMetric>();
+    }
+
+    std::size_t met = (*solver)(multigraph0.multiGraph, multigraph1.multiGraph);
+    std::cout << "Metric: " << met << "\n";
+}
+
+void MultigraphCLI::execute_find_hamiltonian_extension() const {
+    const auto multigraphs = load_multigraphs(input0_.filepath);
+    const auto multigraph = get_multigraph(input0_, multigraphs);
+
+    print_multigraph(multigraph);
+
+    if (approx_) {
+        throw std::runtime_error("Approximation not implemented.");
+    } else {
+        hamilton::findKHamiltonianExtension(k_, multigraph.multiGraph);
+    }
+}
+
+void MultigraphCLI::execute_find_max_cycles() const {
+    const auto multigraphs = load_multigraphs(input0_.filepath);
+    const auto multigraph = get_multigraph(input0_, multigraphs);
+
+    print_multigraph(multigraph);
+    auto maxCycleFinder = cycleFinder::MaxCycle(multigraph.multiGraph, k_);
+    auto cycles = approx_ ? maxCycleFinder.approximate() : maxCycleFinder.solve();
+
+    std::cout << "Found " << cycles.size() << " max cycles.\n";
+    print_cycles(cycles);
 }
 
 std::vector<AdjacencyMatrix> MultigraphCLI::parse_all_multigraphs(std::istream& input) {
