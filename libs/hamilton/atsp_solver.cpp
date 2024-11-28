@@ -1,4 +1,7 @@
 #include "include/atsp_solver.hpp"
+#include <cstddef>
+#include <iostream>
+#include <utility>
 
 namespace hamilton
 {
@@ -106,21 +109,31 @@ ATSPSolver::Matrix ATSPSolver::approximate() {
     path.push_back(0);
 
     // 2-Opt heuristic
+    std::size_t numImpr = 0;
+    std::size_t costForward, costReverse;
     bool improvement = true;
-    while (improvement) {
+    while (numImpr < n_ && improvement) {
         improvement = false;
         for (std::size_t i = 1; i < path.size() - 2; ++i) {
+            costForward = 0;
+            costReverse = 0;
             for (std::size_t j = i + 1; j < path.size() - 1; ++j) {
                 std::size_t cost_before = cost_matrix_[path[i - 1]][path[i]] +
+                                          costForward +
                                           cost_matrix_[path[j]][path[j + 1]];
                 std::size_t cost_after = cost_matrix_[path[i - 1]][path[j]] +
+                                         costReverse +
                                          cost_matrix_[path[i]][path[j + 1]];
                 if (cost_after < cost_before) {
-                    std::reverse(path.begin() + i, path.begin() + j + 1);
                     improvement = true;
+                    std::reverse(path.begin() + i, path.begin() + j + 1);
+                    std::swap(costForward, costReverse);
                 }
+                costForward += cost_matrix_[path[j]][path[j+1]];
+                costReverse += cost_matrix_[path[j+1]][path[j]];
             }
         }
+        numImpr++;
     }
 
     return reconstruct_cycle(path);

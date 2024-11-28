@@ -102,7 +102,20 @@ void MultigraphCLI::execute_find_hamiltonian_extension() const {
 
     print_multigraph(multigraph);
 
-    hamilton::findKHamiltonianExtension(k_, multigraph.multiGraph, approx_);
+    core::Multigraph extension = hamilton::findKHamiltonianExtension(k_, multigraph.multiGraph, approx_);
+
+    std::size_t kExtSize = 0;
+    std::cout << "Hamiltonian k-extension: " << std::endl;
+    for(auto& row : extension.getAdjacencyMatrix()) {
+      for(auto& val : row) {
+        std::cout << val << " ";
+        kExtSize += val;
+      }
+      std::cout << std::endl;
+    }
+    std::cout << "Hamiltonian k-extension size: " << kExtSize << std::endl;
+
+    
 }
 
 void MultigraphCLI::execute_find_max_cycles() const {
