@@ -35,12 +35,10 @@ ATSPSolver::Matrix ATSPSolver::solve() {
     // fill the table
     for (std::size_t mask = 1; mask < (1U << n_); ++mask) {
         for (std::size_t u = 0; u < n_; ++u) {
-            if (!(mask & (1U << u)) || dp[mask][u] == INF)
-                continue;
+            if (!(mask & (1U << u)) || dp[mask][u] == INF) continue;
 
             for (std::size_t v = 0; v < n_; ++v) {
-                if (mask & (1U << v) || cost_matrix_[u][v] == INF)
-                    continue;
+                if (mask & (1U << v) || cost_matrix_[u][v] == INF) continue;
 
                 std::size_t new_mask = mask | (1U << v);
                 std::size_t new_cost = dp[mask][u] + cost_matrix_[u][v];
@@ -85,7 +83,6 @@ ATSPSolver::Matrix ATSPSolver::solve() {
     return reconstruct_cycle(path);
 }
 
-
 ATSPSolver::Matrix ATSPSolver::approximate() {
     // nearest-neighbor heuristic
     std::vector<std::size_t> path;
@@ -123,19 +120,17 @@ ATSPSolver::Matrix ATSPSolver::approximate() {
             costReverse = 0;
 
             for (std::size_t j = i + 1; j < path.size() - 1; ++j) {
-                std::size_t cost_before = cost_matrix_[path[i - 1]][path[i]] +
-                                          costForward +
-                                          cost_matrix_[path[j]][path[j + 1]];
-                std::size_t cost_after = cost_matrix_[path[i - 1]][path[j]] +
-                                         costReverse +
-                                         cost_matrix_[path[i]][path[j + 1]];
+                std::size_t cost_before =
+                    cost_matrix_[path[i - 1]][path[i]] + costForward + cost_matrix_[path[j]][path[j + 1]];
+                std::size_t cost_after =
+                    cost_matrix_[path[i - 1]][path[j]] + costReverse + cost_matrix_[path[i]][path[j + 1]];
                 if (cost_after < cost_before) {
                     improvement = true;
                     std::reverse(path.begin() + i, path.begin() + j + 1);
                     std::swap(costForward, costReverse);
                 }
-                costForward += cost_matrix_[path[j]][path[j+1]];
-                costReverse += cost_matrix_[path[j+1]][path[j]];
+                costForward += cost_matrix_[path[j]][path[j + 1]];
+                costReverse += cost_matrix_[path[j + 1]][path[j]];
             }
         }
         numImpr++;

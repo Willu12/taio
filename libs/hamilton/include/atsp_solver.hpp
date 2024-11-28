@@ -27,7 +27,8 @@ class ATSPSolver {
     std::vector<std::vector<std::size_t>> computeMST();
 
     // Helper function to compute an improved matching (compared to Christofides' greedy approach)
-    std::vector<std::pair<std::size_t, std::size_t>> computeImprovedMatching(const std::vector<std::size_t>& odd_vertices);
+    std::vector<std::pair<std::size_t, std::size_t>> computeImprovedMatching(
+        const std::vector<std::size_t>& odd_vertices);
 
     // Helper function to convert Eulerian Circuit into Hamiltonian Cycle
     std::vector<std::size_t> eulerianToHamiltonian(const std::vector<std::size_t>& eulerian_circuit);
