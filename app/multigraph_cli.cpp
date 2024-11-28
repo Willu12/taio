@@ -105,17 +105,33 @@ void MultigraphCLI::execute_find_hamiltonian_extension() const {
     core::Multigraph extension = hamilton::findKHamiltonianExtension(k_, multigraph.multiGraph, approx_);
 
     std::size_t kExtSize = 0;
+    auto extMatrix = extension.getAdjacencyMatrix();
     std::cout << "Hamiltonian k-extension: " << std::endl;
-    for(auto& row : extension.getAdjacencyMatrix()) {
-      for(auto& val : row) {
-        std::cout << val << " ";
-        kExtSize += val;
+    for(int i = 0; i < extMatrix.size(); ++i) {
+      for(int j = 0; j < extMatrix.size(); ++j) {
+        std::cout << extMatrix[i][j] << " ";
+        kExtSize += extMatrix[i][j];
       }
       std::cout << std::endl;
     }
     std::cout << "Hamiltonian k-extension size: " << kExtSize << std::endl;
 
-    
+    auto multMatrix = multigraph.multiGraph.getAdjacencyMatrix();
+    std::cout << "Extended input multigraph to Hamiltonian k-cycle graph: " << std::endl;
+    for(int i = 0; i < multMatrix.size(); ++i) {
+      for(int j = 0; j < multMatrix.size(); ++j) {
+        std::cout << multMatrix[i][j] + extMatrix[i][j] << " ";
+      }
+      std::cout << std::endl;
+    }
+
+    std::cout << "Result Hamiltonian k-cycle: " << std::endl;
+    for(int i = 0; i < multMatrix.size(); ++i) {
+      for(int j = 0; j < multMatrix.size(); ++j) {
+        std::cout << (extMatrix[i][j] > 0 ? multMatrix[i][j] + extMatrix[i][j] : 0) << " ";
+      }
+      std::cout << std::endl;
+    }
 }
 
 void MultigraphCLI::execute_find_max_cycles() const {
