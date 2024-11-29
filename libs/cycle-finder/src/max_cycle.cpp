@@ -127,13 +127,12 @@ void MaxCycle::filterMaxCyclesExact() {
         graphCycles[i] = baseMultiGraph_.inducedSubgraph(maxCycles_[i]);
     }
     // find max Size;
-    core::Size maxCycleSizeExact = core::Size{0, 0, 0};
     for (const auto& cycle : graphCycles) {
-        if (cycle.size() > maxCycleSizeExact) maxCycleSizeExact = cycle.size();
+        if (cycle.size() > maxCycleSizeExact_) maxCycleSizeExact_ = cycle.size();
     }
 
     for (int i = 0; i < graphCycles.size(); i++) {
-        if (graphCycles[i].size() == maxCycleSizeExact) {
+        if (graphCycles[i].size() == maxCycleSizeExact_) {
             maxCyclesExact_.push_back(maxCycles_[i]);
         }
     }
@@ -141,6 +140,10 @@ void MaxCycle::filterMaxCyclesExact() {
 
 std::vector<std::vector<vertex>> MaxCycle::getMaxVertexCycle() {
     return maxCycles_;
+}
+
+core::Size MaxCycle::getMaxSize() {
+    return maxCycleSizeExact_;
 }
 
 } // namespace cycleFinder

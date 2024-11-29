@@ -49,7 +49,9 @@ class MultigraphCLI {
     static std::vector<AdjacencyMatrix> load_multigraphs(const std::string& filepath);
     static Multigraph get_multigraph(const Multigraph& input, const std::vector<AdjacencyMatrix>& multigraphs);
     static void print_multigraph(const Multigraph& multigraph);
-    static void print_cycles(const std::vector<std::vector<vertex>>& cycles);
+    static void print_cycles(const std::vector<std::vector<vertex>>& cycles, std::size_t vertexCount);
+    static void print_cycle_in_matrix(std::vector<vertex> cycle, std::size_t vertexCount);
+    static void print_cycle(std::vector<vertex> cycle);
 };
 
 #endif // MULTIGRAPHCLI_HPP

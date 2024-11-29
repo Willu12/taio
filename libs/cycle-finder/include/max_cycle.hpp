@@ -14,6 +14,7 @@ class MaxCycle {
     std::set<vertex> blocked_;
     std::unordered_map<vertex, std::vector<vertex>> blockedMap_;
 
+    core::Size maxCycleSizeExact_ = core::Size{0, 0, 0};
     const core::Multigraph baseMultiGraph_;
     core::Multigraph multiGraph_;
     StronglyConnectedComponents stronglyConnectedComponentsFinder_;
@@ -32,5 +33,6 @@ class MaxCycle {
     MaxCycle(const core::Multigraph& multiGraph, unsigned int k);
     std::vector<std::vector<vertex>> solve();
     std::vector<std::vector<vertex>> approximate();
+    core::Size getMaxSize();
 };
 } // namespace cycleFinder
