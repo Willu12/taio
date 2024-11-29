@@ -5,6 +5,9 @@
 namespace core
 {
 
+Multigraph::Multigraph() {
+}
+
 Multigraph::Multigraph(const std::vector<std::vector<std::size_t>>& adjacencyMatrix) {
     this->adjacencyMatrix = adjacencyMatrix;
 }
@@ -16,14 +19,16 @@ std::size_t Multigraph::vertexCount() const {
     return this->adjacencyMatrix.size();
 }
 
-std::size_t Multigraph::size() const {
-    std::size_t size = 0;
+Size Multigraph::size() const {
+    std::size_t edgeCount = 0;
+    std::size_t maxDegree = 0;
     for (const auto& row : adjacencyMatrix) {
         for (const auto& edges : row) {
-            size += edges;
+            edgeCount += edges;
+            maxDegree = maxDegree > edges ? maxDegree : edges;
         }
-    }
-    return size;
+    };
+    return Size{adjacencyMatrix.size(), edgeCount, maxDegree};
 }
 
 std::vector<vertex> Multigraph::getNeighbours(vertex v) const {
