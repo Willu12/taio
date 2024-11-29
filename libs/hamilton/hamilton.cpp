@@ -3,7 +3,8 @@
 
 namespace hamilton
 {
-std::vector<std::vector<std::size_t>> findKHamiltonianExtension(std::size_t k, core::Multigraph multiGraph) {
+std::vector<std::vector<std::size_t>> findKHamiltonianExtension(std::size_t k, core::Multigraph multiGraph,
+                                                                bool approx) {
     ATSPSolver::Matrix multiGraphAM = multiGraph.getAdjacencyMatrix();
     ATSPSolver::Matrix cost(multiGraphAM);
     for (int i = 0; i < cost.size(); ++i) {
@@ -22,27 +23,11 @@ std::vector<std::vector<std::size_t>> findKHamiltonianExtension(std::size_t k, c
         }
     }
 
-    std::cout << "Cost matrix:" << std::endl;
-    for (const auto& row : cost) {
-        for (size_t value : row) {
-            std::cout << value << " ";
-        }
-        std::cout << std::endl;
-    }
-
     ATSPSolver::Matrix cycleMatrix;
 
     try {
         ATSPSolver solver(cost);
-        cycleMatrix = solver.solve();
-
-        std::cout << "Minimal k-hamiltonian cycle:" << std::endl;
-        for (const auto& row : cycleMatrix) {
-            for (size_t value : row) {
-                std::cout << value << " ";
-            }
-            std::cout << std::endl;
-        }
+        cycleMatrix = approx ? solver.approximate() : solver.solve();
 
         for (int i = 0; i < cost.size(); ++i) {
             for (int j = 0; j < cost[0].size(); ++j) {
@@ -51,14 +36,6 @@ std::vector<std::vector<std::size_t>> findKHamiltonianExtension(std::size_t k, c
                     cycleMatrix[i][j] -= 1;
                 }
             }
-        }
-
-        std::cout << "Minimal k-hamiltonian extension:" << std::endl;
-        for (const auto& row : cycleMatrix) {
-            for (size_t value : row) {
-                std::cout << value << " ";
-            }
-            std::cout << std::endl;
         }
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

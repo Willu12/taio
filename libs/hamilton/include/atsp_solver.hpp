@@ -17,13 +17,12 @@ class ATSPSolver {
 
     ATSPSolver(const Matrix& cost_matrix);
     Matrix solve();
+    Matrix approximate();
 
   private:
     Matrix cost_matrix_;
     std::size_t n_;
 
-    std::size_t tsp(std::size_t pos, std::size_t mask, std::vector<std::vector<std::size_t>>& dp,
-                    std::vector<std::vector<std::size_t>>& parent);
     Matrix reconstruct_cycle(const std::vector<std::size_t>& path);
 };
 
