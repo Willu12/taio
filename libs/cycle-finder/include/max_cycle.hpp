@@ -29,7 +29,7 @@ class MaxCycle {
     void filterMaxCyclesExact();
 
   public:
-    std::vector<std::vector<vertex>> getMaxVertexCycle();
+    std::vector<std::vector<vertex>> getMaxVertexCycles();
     MaxCycle(const core::Multigraph& multiGraph, unsigned int k);
     std::vector<std::vector<vertex>> solve();
     std::vector<std::vector<vertex>> approximate();

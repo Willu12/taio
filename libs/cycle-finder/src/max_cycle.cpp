@@ -138,7 +138,7 @@ void MaxCycle::filterMaxCyclesExact() {
     }
 }
 
-std::vector<std::vector<vertex>> MaxCycle::getMaxVertexCycle() {
+std::vector<std::vector<vertex>> MaxCycle::getMaxVertexCycles() {
     return maxCycles_;
 }
 
