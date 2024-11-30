@@ -15,7 +15,6 @@ MultigraphCLI::MultigraphCLI() {
     init_find_hamiltonian_extension_command();
     init_find_max_cycles_command();
     app_.require_subcommand(1, 1);
-    app_.add_flag("--timed", reportTime_, "Report selected algorithm execution time.");
 
     app_.footer("Example:\n"
                 "  ./app distance file0.txt file1.txt -i 0 -j 1\n"
@@ -32,13 +31,13 @@ int MultigraphCLI::exit(const CLI::ParseError& e) {
 }
 
 void MultigraphCLI::run() const {
-	if (app_.got_subcommand("distance")) {
-		execute_distance();
-	} else if (app_.got_subcommand("find_hamiltonian_extension")) {
-		execute_find_hamiltonian_extension();
-	} else if (app_.got_subcommand("find_max_cycles")) {
-		execute_find_max_cycles();
-	}
+    if (app_.got_subcommand("distance")) {
+        execute_distance();
+    } else if (app_.got_subcommand("find_hamiltonian_extension")) {
+        execute_find_hamiltonian_extension();
+    } else if (app_.got_subcommand("find_max_cycles")) {
+        execute_find_max_cycles();
+    }
 }
 
 void MultigraphCLI::init_distance_command() {
@@ -100,17 +99,8 @@ void MultigraphCLI::execute_distance() const {
         H = std::make_unique<core::Multigraph>(multigraph1.multiGraph);
     }
 
-    auto start = std::chrono::high_resolution_clock::now();
-
     std::size_t distance = (*distFun)(*G, *H);
-
-    auto end = std::chrono::high_resolution_clock::now();
-
     std::cout << "Distance: " << distance << "\n";
-
-    if (reportTime_) {
-        std::cout << "Time (ms): " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start) << "\n";
-    }
 }
 
 void MultigraphCLI::execute_find_hamiltonian_extension() const {

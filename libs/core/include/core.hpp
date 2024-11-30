@@ -28,6 +28,7 @@ class Multigraph {
     std::vector<vertex> getNeighbours(vertex v) const;
     Multigraph inducedSubgraph(const std::vector<vertex>& vertices) const;
     Multigraph kGraph(unsigned int k) const;
+    static Multigraph random(std::size_t vertexCount, std::size_t edgeCount);
     std::vector<std::vector<std::size_t>> getAdjacencyMatrix() const;
 };
 

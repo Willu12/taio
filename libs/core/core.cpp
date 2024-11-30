@@ -86,6 +86,20 @@ std::size_t Multigraph::outDegree(std::size_t vertex) const {
     return std::accumulate(adjacencyMatrix[vertex].begin(), adjacencyMatrix[vertex].end(), (std::size_t)0);
 }
 
+Multigraph Multigraph::random(std::size_t vertexCount, std::size_t edgeCount) {
+    auto graph = Multigraph(vertexCount);
+
+    for (std::size_t i = 0; i < edgeCount; i++) {
+        std::size_t u = rand() % vertexCount;
+        std::size_t v = rand() % (vertexCount - 1);
+        if (v >= u) v++;
+
+        graph.addEdge(u, v);
+    }
+
+    return graph;
+}
+
 DegreeTrackingGraph::DegreeTrackingGraph(std::size_t size) : Multigraph(size), _outDegrees(size) {
     computeOutDegrees();
 }
