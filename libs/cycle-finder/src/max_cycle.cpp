@@ -12,16 +12,21 @@ MaxCycle::MaxCycle(const core::Multigraph& multiGraph, unsigned int k)
 }
 
 std::vector<std::vector<vertex>> MaxCycle::approximate() {
-    auto cycles = std::vector<std::vector<vertex>>();
+    cycles_ = std::vector<std::vector<vertex>>();
     auto stronglyConnectedComponents = stronglyConnectedComponentsFinder_.solve();
 
     std::size_t maxSize = 0;
     for (const auto& stronglyConnectedComponent : stronglyConnectedComponents)
         maxSize = maxSize > stronglyConnectedComponent.size() ? maxSize : stronglyConnectedComponent.size();
 
-    for (const auto& stronglyConnectedComponent : stronglyConnectedComponents)
-        if (stronglyConnectedComponent.size() == maxSize) cycles.push_back(stronglyConnectedComponent);
-    return cycles;
+    maxSize++;
+    for (auto& stronglyConnectedComponent : stronglyConnectedComponents) {
+        stronglyConnectedComponent.push_back(stronglyConnectedComponent[0]);
+        if (stronglyConnectedComponent.size() == maxSize) cycles_.push_back(stronglyConnectedComponent);
+    }
+    maxCycleSize_ = maxSize;
+    filterMaxCyclesExact();
+    return cycles_;
 }
 
 std::vector<std::vector<vertex>> MaxCycle::solve() {
@@ -124,7 +129,9 @@ void MaxCycle::filterMaxCyclesExact() {
     this->filterMaxCycles();
     auto graphCycles = std::vector<core::Multigraph>(maxCycles_.size());
     for (int i = 0; i < graphCycles.size(); i++) {
-        graphCycles[i] = baseMultiGraph_.inducedSubgraph(maxCycles_[i]);
+        auto cycle_without_repeting_last_vertex = maxCycles_[i];
+        cycle_without_repeting_last_vertex.pop_back();
+        graphCycles[i] = baseMultiGraph_.inducedSubgraph(cycle_without_repeting_last_vertex);
     }
     // find max Size;
     for (const auto& cycle : graphCycles) {

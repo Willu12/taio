@@ -145,16 +145,17 @@ void MultigraphCLI::execute_find_max_cycles() const {
         std::cout << "Didn't find any cycles in this multigraph.\n";
         return;
     };
+    auto maxSize = maxCycleFinder.getMaxSize();
+    std::cout << "Found " << cycles.size() << " max cycles of size \n|V| = " << maxSize.vertexCount
+              << " \n|E| = " << maxSize.edgeCount << " \nmaxOutDegree = " << maxSize.maxOutDegree << "\n";
     if (approx_) {
-        std::cout << "Found " << cycles.size() << " max cycles of size |V| = " << cycles[0].size() << "\n";
+        // std::cout << "Found " << cycles.size() << " max cycles of size |V| = " << cycles[0].size() << "\n";
         for (const auto& cycle : cycles) {
             print_cycle(cycle);
         }
         return;
     }
-    auto maxSize = maxCycleFinder.getMaxSize();
-    std::cout << "Found " << cycles.size() << " max cycles of size \n|V| = " << maxSize.vertexCount
-              << " \n|E| = " << maxSize.edgeCount << " \nmaxOutDegree = " << maxSize.maxOutDegree << "\n";
+
     print_cycles(cycles, multigraph.multiGraph.vertexCount());
 }
 
