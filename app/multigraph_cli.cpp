@@ -7,6 +7,7 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <chrono>
 
 MultigraphCLI::MultigraphCLI() {
     app_.description("CLI tool for working with multigraphs.");
@@ -14,6 +15,7 @@ MultigraphCLI::MultigraphCLI() {
     init_find_hamiltonian_extension_command();
     init_find_max_cycles_command();
     app_.require_subcommand(1, 1);
+    app_.add_flag("--timed", reportTime_, "Report selected algorithm execution time.");
 
     app_.footer("Example:\n"
                 "  ./app distance file0.txt file1.txt -i 0 -j 1\n"
@@ -51,6 +53,8 @@ void MultigraphCLI::init_distance_command() {
     cmd->add_option("-j,--index1", input2_.index, "Index of the multigraph in the second file")->default_val(0);
     cmd->add_flag("--approx", approx_, "Use heuristic metric");
     cmd->add_flag("--counting-sort", countSort_, "Use counting sort in heuristic metric");
+    cmd->add_flag("--const-out-deg", constantOutDegrees_,
+                  "Use constant-time vertex outgoing degree evaluation in heuristic metric");
 }
 
 void MultigraphCLI::init_find_hamiltonian_extension_command() {
@@ -80,15 +84,33 @@ void MultigraphCLI::execute_distance() const {
     print_multigraph(multigraph0);
     print_multigraph(multigraph1);
 
-    std::unique_ptr<metric::Metric> solver;
+    std::unique_ptr<metric::Metric> distFun;
     if (approx_) {
-        solver = std::make_unique<metric::HeuristicMetric>(countSort_);
+        distFun = std::make_unique<metric::HeuristicMetric>(countSort_);
     } else {
-        solver = std::make_unique<metric::ExactMetric>();
+        distFun = std::make_unique<metric::ExactMetric>();
     }
 
-    std::size_t met = (*solver)(multigraph0.multiGraph, multigraph1.multiGraph);
-    std::cout << "Metric: " << met << "\n";
+    std::unique_ptr<core::Multigraph> G, H;
+    if (constantOutDegrees_) {
+        G = std::make_unique<core::DegreeTrackingGraph>(multigraph0.multiGraph);
+        H = std::make_unique<core::DegreeTrackingGraph>(multigraph1.multiGraph);
+    } else {
+        G = std::make_unique<core::Multigraph>(multigraph0.multiGraph);
+        H = std::make_unique<core::Multigraph>(multigraph1.multiGraph);
+    }
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    std::size_t distance = (*distFun)(*G, *H);
+
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Distance: " << distance << "\n";
+
+    if (reportTime_) {
+        std::cout << "Time (ms): " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start) << "\n";
+    }
 }
 
 void MultigraphCLI::execute_find_hamiltonian_extension() const {

@@ -36,6 +36,8 @@ class MultigraphCLI {
     std::size_t k_{1};
     bool approx_{false};
     bool countSort_{false};
+    bool constantOutDegrees_{false};
+    bool reportTime_{false};
 
     void init_distance_command();
     void init_find_hamiltonian_extension_command();

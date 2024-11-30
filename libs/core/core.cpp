@@ -86,4 +86,35 @@ std::size_t Multigraph::outDegree(std::size_t vertex) const {
     return std::accumulate(adjacencyMatrix[vertex].begin(), adjacencyMatrix[vertex].end(), (std::size_t)0);
 }
 
+DegreeTrackingGraph::DegreeTrackingGraph(std::size_t size) : Multigraph(size), _outDegrees(size) {
+    computeOutDegrees();
+}
+DegreeTrackingGraph::DegreeTrackingGraph(const core::Multigraph& multigraph)
+    : Multigraph(multigraph), _outDegrees(multigraph.vertexCount()) {
+    computeOutDegrees();
+}
+DegreeTrackingGraph::DegreeTrackingGraph(const std::vector<std::vector<std::size_t>>& adjacencyMatrix)
+    : Multigraph(adjacencyMatrix), _outDegrees(adjacencyMatrix.size()) {
+    computeOutDegrees();
+}
+
+void DegreeTrackingGraph::computeOutDegrees() {
+    for (std::size_t v = 0; v < vertexCount(); v++) {
+        _outDegrees[v] = Multigraph::outDegree(v);
+    }
+}
+
+void DegreeTrackingGraph::addEdge(vertex u, vertex v) {
+    Multigraph::addEdge(u, v);
+    _outDegrees[u]++;
+}
+void DegreeTrackingGraph::removeAllEdges(vertex v) {
+    Multigraph::removeAllEdges(v);
+    _outDegrees[v] = 0;
+}
+
+std::size_t DegreeTrackingGraph::outDegree(std::size_t vertex) const {
+    return _outDegrees[vertex];
+}
+
 } // namespace core
