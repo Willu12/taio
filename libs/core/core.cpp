@@ -1,6 +1,7 @@
 #include "core.hpp"
 #include <vector>
 #include <numeric>
+#include <stdlib.h>
 
 namespace core
 {

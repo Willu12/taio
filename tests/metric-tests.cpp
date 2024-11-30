@@ -13,7 +13,7 @@ static void BM_ExactMetric(benchmark::State& state) {
     const auto H = core::Multigraph::random(n, n * n);
 
     for (auto _ : state) {
-        auto _ = distFun(G, H);
+        auto dist = distFun(G, H);
     }
 }
 
@@ -24,7 +24,7 @@ static void BM_HeuristicMetric_ComparisonSort_DegreeLinear(benchmark::State& sta
     const auto H = core::Multigraph::random(n, n * n);
 
     for (auto _ : state) {
-        auto _ = distFun(G, H);
+        auto dist = distFun(G, H);
     }
 }
 
@@ -35,7 +35,7 @@ static void BM_HeuristicMetric_CountingSort_DegreeLinear(benchmark::State& state
     const auto H = core::Multigraph::random(n, n * n);
 
     for (auto _ : state) {
-        auto _ = distFun(G, H);
+        auto dist = distFun(G, H);
     }
 }
 
@@ -46,7 +46,7 @@ static void BM_HeuristicMetric_ComparisonSort_DegreeConstant(benchmark::State& s
     const auto H = core::DegreeTrackingGraph(core::Multigraph::random(n, n * n));
 
     for (auto _ : state) {
-        auto _ = distFun(G, H);
+        auto dist = distFun(G, H);
     }
 }
 
@@ -57,7 +57,7 @@ static void BM_HeuristicMetric_CountingSort_DegreeConstant(benchmark::State& sta
     const auto H = core::DegreeTrackingGraph(core::Multigraph::random(n, n * n));
 
     for (auto _ : state) {
-        auto _ = distFun(G, H);
+        auto dist = distFun(G, H);
     }
 }
 
