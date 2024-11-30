@@ -10,12 +10,13 @@
 
 MultigraphCLI::MultigraphCLI() {
     app_.description("CLI tool for working with multigraphs.");
-    init_compare_command();
+    init_distance_command();
     init_find_hamiltonian_extension_command();
     init_find_max_cycles_command();
+    app_.require_subcommand(1, 1);
 
     app_.footer("Example:\n"
-                "  ./app compare file0.txt file1.txt -i 0 -j 1\n"
+                "  ./app distance file0.txt file1.txt -i 0 -j 1\n"
                 "  ./app find_hamiltonian_extension graph.txt -i 0 -k 2\n"
                 "  ./app find_max_cycles graph.txt -i 0 -k 2");
 }
@@ -29,23 +30,17 @@ int MultigraphCLI::exit(const CLI::ParseError& e) {
 }
 
 void MultigraphCLI::run() const {
-    try {
-        if (app_.got_subcommand("compare")) {
-            execute_compare();
-        } else if (app_.got_subcommand("find_hamiltonian_extension")) {
-            execute_find_hamiltonian_extension();
-        } else if (app_.got_subcommand("find_max_cycles")) {
-            execute_find_max_cycles();
-        } else {
-            throw std::runtime_error("No valid subcommand specified.");
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
-    }
+	if (app_.got_subcommand("distance")) {
+		execute_distance();
+	} else if (app_.got_subcommand("find_hamiltonian_extension")) {
+		execute_find_hamiltonian_extension();
+	} else if (app_.got_subcommand("find_max_cycles")) {
+		execute_find_max_cycles();
+	}
 }
 
-void MultigraphCLI::init_compare_command() {
-    auto* cmd = app_.add_subcommand("compare", "Calculate metric of given multigraphs.");
+void MultigraphCLI::init_distance_command() {
+    auto* cmd = app_.add_subcommand("distance", "Calculate the distance between given multigraphs.");
     cmd->add_option("file0", input1_.filepath, "Path to the first multigraph file")
         ->required()
         ->check(CLI::ExistingFile);
@@ -74,7 +69,7 @@ void MultigraphCLI::init_find_max_cycles_command() {
     cmd->add_flag("--approx", approx_, "Use approximation algorithm");
 }
 
-void MultigraphCLI::execute_compare() const {
+void MultigraphCLI::execute_distance() const {
     const auto multigraphs0 = load_multigraphs(input1_.filepath);
     const auto multigraph0 = get_multigraph(input1_, multigraphs0);
 
