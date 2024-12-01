@@ -1,6 +1,6 @@
 # TAiO
 
-University course project that provides a CLI for multigraph (graph theory) operations, including comparison, finding minimal \(k\)-Hamiltonian extensions, and identifying maximal \(k\)-cycles.
+University course project that provides a CLI for multigraph (graph theory) operations, including distance evaluation, finding minimal \(k\)-Hamiltonian extensions, and identifying maximal \(k\)-cycles.
 
 ---
 
@@ -40,13 +40,13 @@ nix develop
 
 ## Command Line Interface
 
-The CLI has three subcommands: `compare`, `find_hamiltonian_extension`, and `find_max_cycles`.
+The CLI has three subcommands: `distance`, `find_hamiltonian_extension`, and `find_max_cycles`.
 
 ### Subcommands
 
 #### **`compare`**: Compares two multigraphs from files.
 ```bash
-./app compare [OPTIONS] file1 file2
+./app distance [OPTIONS] file1 file2
 ```
 
 ##### **Positionals**
@@ -66,11 +66,13 @@ The CLI has three subcommands: `compare`, `find_hamiltonian_extension`, and `fin
   Use a heuristic metric for comparison.
 - `--counting-sort`
   Use counting sort in heuristic metric.
+- `--const-out-deg`
+  Use constant-time vertex outgoing degree evaluation in heuristic metric.
 
 ##### **Example**
 ```bash
-./app compare file1.txt file1.txt -i 0 -j 1
-./app compare file1.txt file2.txt --approx
+./app distance file1.txt file1.txt -i 0 -j 1
+./app distance file1.txt file2.txt --approx
 ```
 
 ---
