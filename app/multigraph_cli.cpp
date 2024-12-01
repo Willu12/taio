@@ -17,7 +17,7 @@ MultigraphCLI::MultigraphCLI() {
     app_.footer("Example:\n"
                 "  ./app compare file0.txt file1.txt -i 0 -j 1\n"
                 "  ./app find_hamiltonian_extension graph.txt -i 0 -k 2\n"
-                "  ./app find_max_cycles graph.txt -i 0 -k 2");
+                "  ./app find_max_cycles graph.txt -i 0 -k 2 -p 10");
 }
 
 void MultigraphCLI::parse(int argc, char** argv) {
@@ -72,6 +72,7 @@ void MultigraphCLI::init_find_max_cycles_command() {
     cmd->add_option("-i,--index", input0_.index, "Index of the multigraph in the file")->default_val(0);
     cmd->add_option("-k", k_, "Value for k in max cycle finding")->default_val(1);
     cmd->add_flag("--approx", approx_, "Use approximation algorithm");
+    cmd->add_option("-p,--print", max_print_, "Maximum amount of printed cycles")->default_val(10);
 }
 
 void MultigraphCLI::execute_compare() const {
@@ -157,7 +158,7 @@ void MultigraphCLI::execute_find_max_cycles() const {
         return;
     }
 
-    print_cycles(cycles, multigraph.multiGraph.vertexCount());
+    this->print_cycles(cycles, multigraph.multiGraph);
 }
 
 std::vector<AdjacencyMatrix> MultigraphCLI::parse_all_multigraphs(std::istream& input) {
@@ -237,30 +238,34 @@ void MultigraphCLI::print_multigraph(const Multigraph& multigraph) {
     std::cout << "\n";
 }
 
-void MultigraphCLI::print_cycles(const std::vector<std::vector<vertex>>& cycles, std::size_t vertexCount) {
+void MultigraphCLI::print_cycles(const std::vector<std::vector<vertex>>& cycles,
+                                 const core::Multigraph& multigraph) const {
     std::cout << "Found Cycles: \n\n";
-    unsigned int i = 0;
+    std::size_t i = 1;
     for (const auto& cycle : cycles) {
+        if (i > max_print_) return;
         std::cout << "Cycle " << i++ << ":\n";
         print_cycle(cycle);
+        print_cycle_in_multigraph(cycle, multigraph);
         std::cout << "\n";
-        print_cycle_in_matrix(cycle, vertexCount);
-        std::cout << "\n \n";
     }
 }
 
-void MultigraphCLI::print_cycle(std::vector<vertex> cycle) {
+void MultigraphCLI::print_cycle(const std::vector<vertex>& cycle) {
     std::cout << "Cycle vertices: \n";
     for (auto vertex : cycle) {
         std::cout << vertex << " ";
     }
+    std::cout << "\n";
 }
 
-void MultigraphCLI::print_cycle_in_matrix(std::vector<vertex> cycle, std::size_t vertexCount) {
+void MultigraphCLI::print_cycle_in_multigraph(const std::vector<vertex>& cycle, const core::Multigraph& multigraph) {
     std::cout << "Cycle represented in multigraph matrix: \n";
-    std::vector<std::vector<vertex>> adjacencyMatrix(vertexCount, std::vector<vertex>(vertexCount, 0));
+    std::vector<std::vector<vertex>> adjacencyMatrix(multigraph.vertexCount(),
+                                                     std::vector<vertex>(multigraph.vertexCount(), 0));
+    auto multigraphAdjacencyMatrix = multigraph.getAdjacencyMatrix();
     for (int i = 0; i < cycle.size() - 1; i++) {
-        adjacencyMatrix[cycle[i]][cycle[i + 1]] = i + 1;
+        adjacencyMatrix[cycle[i]][cycle[i + 1]] = multigraphAdjacencyMatrix[cycle[i]][cycle[i + 1]];
     }
     for (const auto& row : adjacencyMatrix) {
         for (auto value : row) {

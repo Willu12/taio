@@ -120,10 +120,12 @@ The CLI has three subcommands: `compare`, `find_hamiltonian_extension`, and `fin
   Value for \(k\) in maximal cycle finding (default: 1).
 - `--approx`
   Use an approximation algorithm for finding cycles.
+- `-p,--print` `<uint>`
+  Maximum amount of printed cycles.  
 
 ##### **Example**
 ```bash
-./app find_max_cycles graph.txt -i 0 -k 3
+./app find_max_cycles graph.txt -i 0 -k 3 -p 10
 ./app find_max_cycles graph.txt --approx
 ```
 
