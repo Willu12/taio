@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <vector>
 
+
 MultigraphCLI::MultigraphCLI() {
     app_.description("CLI tool for working with multigraphs.");
     init_compare_command();
@@ -125,6 +126,16 @@ void MultigraphCLI::execute_find_hamiltonian_extension() const {
         }
         std::cout << std::endl;
     }
+
+
+    if (approx_) {
+        auto modifiedGraph = multigraph.multiGraph.kGraph(k_);
+        auto modifiedMatrix = modifiedGraph.getAdjacencyMatrix();
+        std::size_t maxFlow = hamilton::findAllHamiltonianCycles(modifiedMatrix, extMatrix, k_);
+
+        std::cout << "Max flow is: " << maxFlow << std::endl;
+    }
+    
 }
 
 void MultigraphCLI::execute_find_max_cycles() const {
