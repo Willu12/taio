@@ -124,14 +124,6 @@ void MultigraphCLI::execute_find_hamiltonian_extension() const {
         }
         std::cout << std::endl;
     }
-
-    std::cout << "Result Hamiltonian k-cycle: " << std::endl;
-    for (int i = 0; i < multMatrix.size(); ++i) {
-        for (int j = 0; j < multMatrix.size(); ++j) {
-            std::cout << (extMatrix[i][j] > 0 ? multMatrix[i][j] + extMatrix[i][j] : 0) << " ";
-        }
-        std::cout << std::endl;
-    }
 }
 
 void MultigraphCLI::execute_find_max_cycles() const {
