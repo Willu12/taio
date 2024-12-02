@@ -17,6 +17,6 @@ void divideVertices(std::vector<std::vector<std::size_t>>& inputGraph, std::vect
 
 std::size_t findAllHamiltonianCycles(std::vector<std::vector<std::size_t>>& inputGraph,
                                      std::vector<std::vector<std::size_t>>& extensionMatrix, std::size_t k);
-}
+} // namespace hamilton
 
 #endif

@@ -46,22 +46,16 @@ std::vector<std::vector<std::size_t>> findKHamiltonianExtension(std::size_t k, c
     return cycleMatrix;
 }
 
-void divideVertices(std::vector<std::vector<std::size_t>>& inputGraph, 
-                    std::set<std::size_t>& X_in,
-                    std::set<std::size_t>& X_out,
-                    std::set<std::size_t>& Y,
-                    std::vector<std::vector<std::size_t>>& extensionMatrix) 
-{
-    for (int i = 0; i < inputGraph.size(); ++i) 
-    {
-        for (int j = 0; j<inputGraph.size(); j++) 
-        {
-            if (extensionMatrix[i][j] != 0) 
-            {
+void divideVertices(std::vector<std::vector<std::size_t>>& inputGraph, std::set<std::size_t>& X_in,
+                    std::set<std::size_t>& X_out, std::set<std::size_t>& Y,
+                    std::vector<std::vector<std::size_t>>& extensionMatrix) {
+    for (int i = 0; i < inputGraph.size(); ++i) {
+        for (int j = 0; j < inputGraph.size(); j++) {
+            if (extensionMatrix[i][j] != 0) {
                 X_out.insert(i);
                 X_in.insert(j);
             }
-        } 
+        }
     }
 
     for (int i = 0; i < inputGraph.size(); ++i) {
@@ -84,14 +78,14 @@ void splitRepeatedVertices(std::vector<std::vector<std::size_t>>& inputGraph, st
 
     for (std::size_t oldVertex : verticesToSplit) {
         std::size_t newVertex = inputGraph.size();
-        inputGraph.emplace_back(std::vector<std::size_t>(inputGraph.size() + 1, 0)); 
+        inputGraph.emplace_back(std::vector<std::size_t>(inputGraph.size() + 1, 0));
         for (auto& row : inputGraph) {
-            row.push_back(0); 
+            row.push_back(0);
         }
 
-        extensionMatrix.emplace_back(std::vector<std::size_t>(inputGraph.size() + 1, 0)); 
+        extensionMatrix.emplace_back(std::vector<std::size_t>(inputGraph.size() + 1, 0));
         for (auto& row : extensionMatrix) {
-            row.push_back(0); 
+            row.push_back(0);
         }
 
         for (std::size_t i = 0; i < verticesNumber; ++i) {
@@ -107,7 +101,7 @@ void splitRepeatedVertices(std::vector<std::vector<std::size_t>>& inputGraph, st
 }
 
 std::size_t findAllHamiltonianCycles(std::vector<std::vector<std::size_t>>& inputGraph,
-                                                               std::vector<std::vector<std::size_t>>& extensionMatrix, std::size_t k) {
+                                     std::vector<std::vector<std::size_t>>& extensionMatrix, std::size_t k) {
     std::vector<std::vector<std::size_t>> cycles;
 
     std::set<std::size_t> X_in, X_out, Y;
@@ -123,13 +117,12 @@ std::size_t findAllHamiltonianCycles(std::vector<std::vector<std::size_t>>& inpu
         flowGraph.addEdge(source, x_i, INF);
     }
 
-    
     for (size_t x_o : X_out) {
         flowGraph.addEdge(x_o, sink, INF);
     }
 
     for (size_t x : X_out) {
-        for (size_t y : Y) { 
+        for (size_t y : Y) {
             if (inputGraph[y][x] > 0) {
                 flowGraph.addEdge(y, x, 1);
             }
