@@ -125,15 +125,14 @@ void MaxCycle::filterMaxCycles() {
 }
 
 void MaxCycle::filterMaxCyclesExact() {
-    // create graphs from all cycles.
+    if (cycles_.empty()) return;
+
     this->filterMaxCycles();
     auto graphCycles = std::vector<core::Multigraph>(maxCycles_.size());
     for (int i = 0; i < graphCycles.size(); i++) {
-        auto cycle_without_repeting_last_vertex = maxCycles_[i];
-        cycle_without_repeting_last_vertex.pop_back();
-        graphCycles[i] = baseMultiGraph_.inducedSubgraph(cycle_without_repeting_last_vertex);
+        graphCycles[i] = baseMultiGraph_.cycleGraph(maxCycles_[i]);
     }
-    // find max Size;
+
     for (const auto& cycle : graphCycles) {
         if (cycle.size() > maxCycleSizeExact_) maxCycleSizeExact_ = cycle.size();
     }

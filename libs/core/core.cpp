@@ -62,6 +62,14 @@ Multigraph Multigraph::inducedSubgraph(const std::vector<vertex>& vertices) cons
     return G;
 }
 
+Multigraph Multigraph::cycleGraph(const std::vector<vertex>& vertices) const {
+    auto G = Multigraph(vertices.size() - 1);
+    for (vertex v = 1; v < vertices.size() - 1; v++) {
+        G.adjacencyMatrix[v - 1][v] = adjacencyMatrix[vertices[v - 1]][vertices[v]];
+    }
+    return G;
+}
+
 void Multigraph::removeAllEdges(vertex v) {
     for (vertex u = 0; u < this->vertexCount(); u++) {
         adjacencyMatrix[v][u] = adjacencyMatrix[u][v] = 0;
