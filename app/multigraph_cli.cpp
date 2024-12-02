@@ -119,21 +119,31 @@ void MultigraphCLI::execute_find_hamiltonian_extension() const {
     std::cout << "Hamiltonian k-extension size: " << kExtSize << std::endl;
 
     auto multMatrix = multigraph.multiGraph.getAdjacencyMatrix();
+    
     std::cout << "Extended input multigraph to Hamiltonian k-cycle graph: " << std::endl;
+    std::vector<std::vector<std::size_t>> extendedMatrix(multMatrix.size(), std::vector<std::size_t>(multMatrix.size()));
     for (int i = 0; i < multMatrix.size(); ++i) {
         for (int j = 0; j < multMatrix.size(); ++j) {
+            extendedMatrix[i][j] = multMatrix[i][j] + extMatrix[i][j];
             std::cout << multMatrix[i][j] + extMatrix[i][j] << " ";
         }
         std::cout << std::endl;
     }
-
 
     if (approx_) {
         auto modifiedGraph = multigraph.multiGraph.kGraph(k_);
         auto modifiedMatrix = modifiedGraph.getAdjacencyMatrix();
         std::size_t maxFlow = hamilton::findAllHamiltonianCycles(modifiedMatrix, extMatrix, k_);
 
-        std::cout << "Max flow is: " << maxFlow << std::endl;
+         std::cout << "Number of Hamilton cycles in the extended graph: " << maxFlow << std::endl;
+    }
+    else {
+        core::Multigraph extendedMultiGraph(extendedMatrix);
+        cycleFinder::MaxCycle maxCycleObj(extendedMultiGraph, k_);
+        maxCycleObj.solve();
+        auto cycles = maxCycleObj.getMaxVertexCycles();
+
+        std::cout << "Number of Hamilton cycles in the extended graph: " << cycles.size() <<  std::endl;
     }
     
 }
