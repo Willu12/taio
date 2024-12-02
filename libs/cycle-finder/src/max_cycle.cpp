@@ -7,20 +7,26 @@
 namespace cycleFinder
 {
 MaxCycle::MaxCycle(const core::Multigraph& multiGraph, unsigned int k)
-    : multiGraph_(multiGraph.kGraph(k)), k_(k), stronglyConnectedComponentsFinder_(multiGraph) {
+    : multiGraph_(multiGraph.kGraph(k)), k_(k), stronglyConnectedComponentsFinder_(multiGraph_),
+      baseMultiGraph_(multiGraph) {
 }
 
 std::vector<std::vector<vertex>> MaxCycle::approximate() {
-    auto cycles = std::vector<std::vector<vertex>>();
+    cycles_ = std::vector<std::vector<vertex>>();
     auto stronglyConnectedComponents = stronglyConnectedComponentsFinder_.solve();
 
     std::size_t maxSize = 0;
     for (const auto& stronglyConnectedComponent : stronglyConnectedComponents)
         maxSize = maxSize > stronglyConnectedComponent.size() ? maxSize : stronglyConnectedComponent.size();
 
-    for (const auto& stronglyConnectedComponent : stronglyConnectedComponents)
-        if (stronglyConnectedComponent.size() == maxSize) cycles.push_back(stronglyConnectedComponent);
-    return cycles;
+    maxSize++;
+    for (auto& stronglyConnectedComponent : stronglyConnectedComponents) {
+        stronglyConnectedComponent.push_back(stronglyConnectedComponent[0]);
+        if (stronglyConnectedComponent.size() == maxSize) cycles_.push_back(stronglyConnectedComponent);
+    }
+    maxCycleSize_ = maxSize;
+    filterMaxCyclesExact();
+    return cycles_;
 }
 
 std::vector<std::vector<vertex>> MaxCycle::solve() {
@@ -48,8 +54,8 @@ std::vector<std::vector<vertex>> MaxCycle::solve() {
         }
     }
 
-    filterMaxCycles();
-    return maxCycles_;
+    filterMaxCyclesExact();
+    return maxCyclesExact_;
 }
 
 void MaxCycle::processStronglyConnectedComponent(const std::vector<vertex>& scc) {
@@ -113,10 +119,37 @@ void MaxCycle::unblockVertex(vertex v) {
 }
 
 void MaxCycle::filterMaxCycles() {
-
     for (const auto& cycle : cycles_) {
         if (cycle.size() == maxCycleSize_) maxCycles_.push_back(cycle);
     }
+}
+
+void MaxCycle::filterMaxCyclesExact() {
+    if (cycles_.empty()) return;
+
+    this->filterMaxCycles();
+    auto graphCycles = std::vector<core::Multigraph>(maxCycles_.size());
+    for (int i = 0; i < graphCycles.size(); i++) {
+        graphCycles[i] = baseMultiGraph_.cycleGraph(maxCycles_[i]);
+    }
+
+    for (const auto& cycle : graphCycles) {
+        if (cycle.size() > maxCycleSizeExact_) maxCycleSizeExact_ = cycle.size();
+    }
+
+    for (int i = 0; i < graphCycles.size(); i++) {
+        if (graphCycles[i].size() == maxCycleSizeExact_) {
+            maxCyclesExact_.push_back(maxCycles_[i]);
+        }
+    }
+}
+
+std::vector<std::vector<vertex>> MaxCycle::getMaxVertexCycles() {
+    return maxCycles_;
+}
+
+core::Size MaxCycle::getMaxSize() {
+    return maxCycleSizeExact_;
 }
 
 } // namespace cycleFinder

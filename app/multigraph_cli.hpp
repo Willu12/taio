@@ -34,6 +34,7 @@ class MultigraphCLI {
     Multigraph input2_{"", 0, core::Multigraph(0)};
     Multigraph input0_{"", 0, core::Multigraph(0)};
     std::size_t k_{1};
+    std::size_t max_print_{10};
     bool approx_{false};
     bool countSort_{false};
 
@@ -49,7 +50,9 @@ class MultigraphCLI {
     static std::vector<AdjacencyMatrix> load_multigraphs(const std::string& filepath);
     static Multigraph get_multigraph(const Multigraph& input, const std::vector<AdjacencyMatrix>& multigraphs);
     static void print_multigraph(const Multigraph& multigraph);
-    static void print_cycles(const std::vector<std::vector<vertex>>& cycles);
+    void print_cycles(const std::vector<std::vector<vertex>>& cycles, const core::Multigraph& multigraph) const;
+    static void print_cycle_in_multigraph(const std::vector<vertex>& cycle, const core::Multigraph& multigraph);
+    static void print_cycle(const std::vector<vertex>& cycle);
 };
 
 #endif // MULTIGRAPHCLI_HPP
