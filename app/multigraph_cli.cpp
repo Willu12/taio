@@ -1,13 +1,13 @@
 #include "multigraph_cli.hpp"
 #include "core.hpp"
 #include "max_cycle.hpp"
-#include "strongly_connected_components.hpp"
 #include "hamilton.hpp"
 #include "metric.hpp"
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <chrono>
+#include <vector>
 
 MultigraphCLI::MultigraphCLI() {
     app_.description("CLI tool for working with multigraphs.");
@@ -19,7 +19,7 @@ MultigraphCLI::MultigraphCLI() {
     app_.footer("Example:\n"
                 "  ./app distance file0.txt file1.txt -i 0 -j 1\n"
                 "  ./app find_hamiltonian_extension graph.txt -i 0 -k 2\n"
-                "  ./app find_max_cycles graph.txt -i 0 -k 2");
+                "  ./app find_max_cycles graph.txt -i 0 -k 2 -p 10");
 }
 
 void MultigraphCLI::parse(int argc, char** argv) {
@@ -70,6 +70,7 @@ void MultigraphCLI::init_find_max_cycles_command() {
     cmd->add_option("-i,--index", input0_.index, "Index of the multigraph in the file")->default_val(0);
     cmd->add_option("-k", k_, "Value for k in max cycle finding")->default_val(1);
     cmd->add_flag("--approx", approx_, "Use approximation algorithm");
+    cmd->add_option("-p,--print", max_print_, "Maximum amount of printed cycles")->default_val(10);
 }
 
 void MultigraphCLI::execute_distance() const {
@@ -124,20 +125,31 @@ void MultigraphCLI::execute_find_hamiltonian_extension() const {
     std::cout << "Hamiltonian k-extension size: " << kExtSize << std::endl;
 
     auto multMatrix = multigraph.multiGraph.getAdjacencyMatrix();
+
     std::cout << "Extended input multigraph to Hamiltonian k-cycle graph: " << std::endl;
+    std::vector<std::vector<std::size_t>> extendedMatrix(multMatrix.size(),
+                                                         std::vector<std::size_t>(multMatrix.size()));
     for (int i = 0; i < multMatrix.size(); ++i) {
         for (int j = 0; j < multMatrix.size(); ++j) {
+            extendedMatrix[i][j] = multMatrix[i][j] + extMatrix[i][j];
             std::cout << multMatrix[i][j] + extMatrix[i][j] << " ";
         }
         std::cout << std::endl;
     }
 
-    std::cout << "Result Hamiltonian k-cycle: " << std::endl;
-    for (int i = 0; i < multMatrix.size(); ++i) {
-        for (int j = 0; j < multMatrix.size(); ++j) {
-            std::cout << (extMatrix[i][j] > 0 ? multMatrix[i][j] + extMatrix[i][j] : 0) << " ";
-        }
-        std::cout << std::endl;
+    if (approx_) {
+        auto modifiedGraph = multigraph.multiGraph.kGraph(k_);
+        auto modifiedMatrix = modifiedGraph.getAdjacencyMatrix();
+        std::size_t maxFlow = hamilton::findAllHamiltonianCycles(modifiedMatrix, extMatrix, k_);
+
+        std::cout << "Number of Hamilton cycles in the extended graph: " << maxFlow << std::endl;
+    } else {
+        core::Multigraph extendedMultiGraph(extendedMatrix);
+        cycleFinder::MaxCycle maxCycleObj(extendedMultiGraph, k_);
+        maxCycleObj.solve();
+        auto cycles = maxCycleObj.getMaxVertexCycles();
+
+        std::cout << "Number of Hamilton cycles in the extended graph: " << cycles.size() << std::endl;
     }
 }
 
@@ -148,9 +160,23 @@ void MultigraphCLI::execute_find_max_cycles() const {
     print_multigraph(multigraph);
     auto maxCycleFinder = cycleFinder::MaxCycle(multigraph.multiGraph, k_);
     auto cycles = approx_ ? maxCycleFinder.approximate() : maxCycleFinder.solve();
+    if (cycles.empty()) {
+        std::cout << "Didn't find any cycles in this multigraph.\n";
+        return;
+    };
 
-    std::cout << "Found " << cycles.size() << " max cycles.\n";
-    print_cycles(cycles);
+    auto maxSize = maxCycleFinder.getMaxSize();
+    std::cout << "Found " << cycles.size() << " max cycles of size \n|V| = " << maxSize.vertexCount
+              << " \n|E| = " << maxSize.edgeCount << " \nmaxOutDegree = " << maxSize.maxOutDegree << "\n";
+
+    if (approx_) {
+        for (const auto& cycle : cycles) {
+            print_cycle(cycle);
+        }
+        return;
+    }
+
+    this->print_cycles(cycles, multigraph.multiGraph);
 }
 
 std::vector<AdjacencyMatrix> MultigraphCLI::parse_all_multigraphs(std::istream& input) {
@@ -230,11 +256,38 @@ void MultigraphCLI::print_multigraph(const Multigraph& multigraph) {
     std::cout << "\n";
 }
 
-void MultigraphCLI::print_cycles(const std::vector<std::vector<vertex>>& cycles) {
-    std::cout << "Found Cycles: \n";
+void MultigraphCLI::print_cycles(const std::vector<std::vector<vertex>>& cycles,
+                                 const core::Multigraph& multigraph) const {
+    std::cout << "Found Cycles: \n\n";
+    std::size_t i = 1;
     for (const auto& cycle : cycles) {
-        for (auto vertex : cycle) {
-            std::cout << vertex << " ";
+        if (i > max_print_) return;
+        std::cout << "Cycle " << i++ << ":\n";
+        print_cycle(cycle);
+        print_cycle_in_multigraph(cycle, multigraph);
+        std::cout << "\n";
+    }
+}
+
+void MultigraphCLI::print_cycle(const std::vector<vertex>& cycle) {
+    std::cout << "Cycle vertices: \n";
+    for (auto vertex : cycle) {
+        std::cout << vertex << " ";
+    }
+    std::cout << "\n";
+}
+
+void MultigraphCLI::print_cycle_in_multigraph(const std::vector<vertex>& cycle, const core::Multigraph& multigraph) {
+    std::cout << "Cycle represented in multigraph matrix: \n";
+    std::vector<std::vector<vertex>> adjacencyMatrix(multigraph.vertexCount(),
+                                                     std::vector<vertex>(multigraph.vertexCount(), 0));
+    auto multigraphAdjacencyMatrix = multigraph.getAdjacencyMatrix();
+    for (int i = 0; i < cycle.size() - 1; i++) {
+        adjacencyMatrix[cycle[i]][cycle[i + 1]] = multigraphAdjacencyMatrix[cycle[i]][cycle[i + 1]];
+    }
+    for (const auto& row : adjacencyMatrix) {
+        for (auto value : row) {
+            std::cout << value << " ";
         }
         std::cout << "\n";
     }
