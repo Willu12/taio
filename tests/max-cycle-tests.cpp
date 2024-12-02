@@ -49,7 +49,7 @@ static void BM_max_cycle_exact_changing_k(benchmark::State& state) {
 }
 
 BENCHMARK(BM_max_cycle_approximation_changing_n)->RangeMultiplier(2)->Range(8, 4096)->Setup(Setup);
-BENCHMARK(BM_max_cycle_exact_changing_n)->DenseRange(2, 11)->Setup(Setup);
+BENCHMARK(BM_max_cycle_exact_changing_n)->DenseRange(2, 15)->Setup(Setup);
 
 BENCHMARK(BM_max_cycle_approximation_changing_k)->RangeMultiplier(2)->Range(8, 4096)->Setup(Setup);
 BENCHMARK(BM_max_cycle_exact_changing_k)->RangeMultiplier(2)->Range(8, 4096)->Setup(Setup);
