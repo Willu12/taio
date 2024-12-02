@@ -1,0 +1,21 @@
+2024-12-02T21:13:48+01:00
+Running ../build/tests/tests
+Run on (8 X 3179.18 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x4)
+  L1 Instruction 64 KiB (x4)
+  L2 Unified 512 KiB (x4)
+  L3 Unified 4096 KiB (x1)
+Load Average: 1.98, 1.40, 0.93
+***WARNING*** Library was built as DEBUG. Timings may be affected.
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_hamilton_k_cycles_approximation_changing_k/8",1,1.0383e+09,1.03345e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/16",1,1.05689e+09,1.05163e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/32",1,1.03648e+09,1.03169e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/64",1,1.01278e+09,1.00836e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/128",1,1.05154e+09,1.04652e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/256",1,1.01413e+09,1.00988e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/512",1,1.02369e+09,1.01926e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/1024",1,1.05942e+09,1.05425e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/2048",1,1.09208e+09,1.08577e+09,ns,,,,,
+"BM_hamilton_k_cycles_approximation_changing_k/4096",1,1.03988e+09,1.03522e+09,ns,,,,,

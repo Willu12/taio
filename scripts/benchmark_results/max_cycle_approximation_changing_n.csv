@@ -1,0 +1,21 @@
+2024-12-02T21:12:42+01:00
+Running ../build/tests/tests
+Run on (8 X 1533.25 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x4)
+  L1 Instruction 64 KiB (x4)
+  L2 Unified 512 KiB (x4)
+  L3 Unified 4096 KiB (x1)
+Load Average: 1.51, 1.17, 0.82
+***WARNING*** Library was built as DEBUG. Timings may be affected.
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_max_cycle_approximation_changing_n/8",182545,3711.41,3699.62,ns,,,,,
+"BM_max_cycle_approximation_changing_n/16",57300,12588.5,12544.5,ns,,,,,
+"BM_max_cycle_approximation_changing_n/32",18803,39101.3,38912.5,ns,,,,,
+"BM_max_cycle_approximation_changing_n/64",5527,133044,132389,ns,,,,,
+"BM_max_cycle_approximation_changing_n/128",1249,584037,577528,ns,,,,,
+"BM_max_cycle_approximation_changing_n/256",164,4.46973e+06,4.36022e+06,ns,,,,,
+"BM_max_cycle_approximation_changing_n/512",36,1.99531e+07,1.94105e+07,ns,,,,,
+"BM_max_cycle_approximation_changing_n/1024",9,8.37102e+07,8.22082e+07,ns,,,,,
+"BM_max_cycle_approximation_changing_n/2048",3,2.09467e+08,2.07849e+08,ns,,,,,
+"BM_max_cycle_approximation_changing_n/4096",1,1.07716e+09,1.07041e+09,ns,,,,,

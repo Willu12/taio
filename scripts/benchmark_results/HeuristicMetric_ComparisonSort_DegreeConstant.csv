@@ -1,0 +1,21 @@
+2024-12-02T21:10:39+01:00
+Running ../build/tests/tests
+Run on (8 X 1980.96 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x4)
+  L1 Instruction 64 KiB (x4)
+  L2 Unified 512 KiB (x4)
+  L3 Unified 4096 KiB (x1)
+Load Average: 1.03, 0.89, 0.69
+***WARNING*** Library was built as DEBUG. Timings may be affected.
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/8",5604905,125.552,125.054,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/16",3092857,236.332,235.343,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/32",1536113,429.167,427.581,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/64",695966,1034.27,1030.37,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/128",309299,2348.78,2339.2,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/256",124394,5803.28,5772.31,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/512",46082,15389.3,15326.3,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/1024",16148,44996.1,44786.4,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/2048",5587,122699,122155,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeConstant/4096",2404,278626,277723,ns,,,,,

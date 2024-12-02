@@ -1,0 +1,21 @@
+2024-12-02T21:09:49+01:00
+Running ../build/tests/tests
+Run on (8 X 2838.27 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x4)
+  L1 Instruction 64 KiB (x4)
+  L2 Unified 512 KiB (x4)
+  L3 Unified 4096 KiB (x1)
+Load Average: 0.70, 0.83, 0.66
+***WARNING*** Library was built as DEBUG. Timings may be affected.
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_ExactMetric/2",10563350,67.0555,66.8477,ns,,,,,
+"BM_ExactMetric/3",2405258,294.997,294.132,ns,,,,,
+"BM_ExactMetric/4",380192,1866.17,1860.57,ns,,,,,
+"BM_ExactMetric/5",54531,12532.5,12498.9,ns,,,,,
+"BM_ExactMetric/6",6789,102624,102330,ns,,,,,
+"BM_ExactMetric/7",762,921575,919024,ns,,,,,
+"BM_ExactMetric/8",63,1.15249e+07,1.14894e+07,ns,,,,,
+"BM_ExactMetric/9",6,1.22499e+08,1.22106e+08,ns,,,,,
+"BM_ExactMetric/10",1,1.44098e+09,1.43691e+09,ns,,,,,
+"BM_ExactMetric/11",1,1.93609e+10,1.93002e+10,ns,,,,,
