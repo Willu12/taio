@@ -67,6 +67,9 @@ Multigraph Multigraph::cycleGraph(const std::vector<vertex>& vertices) const {
     for (vertex v = 1; v < vertices.size() - 1; v++) {
         G.adjacencyMatrix[v - 1][v] = adjacencyMatrix[vertices[v - 1]][vertices[v]];
     }
+    
+    // add last edge
+    G.adjacencyMatrix[vertices.size() - 2][0] = adjacencyMatrix[vertices[vertices.size() - 2]][vertices[0]];
     return G;
 }
 
