@@ -36,6 +36,25 @@ nix develop
    ```
    You can use other CMake commands as long as they generate a compatible build.
 
+#### Windows
+We recommend using Visual Studio and compile the project using Developer PowerShell.
+
+1. **Clone the repository**
+   Clone the repository and initialize submodules:
+   ```bash
+   git clone <repository-url>
+   cd <repository>
+   git submodule update --init --recursive
+   ```
+
+2. **Build with CMake**
+   The recommended approach is:
+   ```bash
+   mkdir build
+   cd build
+   cmake ..
+   cmake --build .
+   ```
 ---
 
 ## Command Line Interface
