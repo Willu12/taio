@@ -1,21 +1,22 @@
-2024-12-02T23:05:39+01:00
+2024-12-03T14:15:40+01:00
 Running ../build/tests/tests
-Run on (8 X 3147.49 MHz CPU s)
+Run on (8 X 2100 MHz CPU s)
 CPU Caches:
   L1 Data 32 KiB (x4)
   L1 Instruction 64 KiB (x4)
   L2 Unified 512 KiB (x4)
   L3 Unified 4096 KiB (x1)
-Load Average: 1.38, 0.80, 0.67
+Load Average: 1.81, 1.65, 1.50
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
 ***WARNING*** Library was built as DEBUG. Timings may be affected.
 name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/8",2533997,211.307,210.228,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/16",1584537,443.372,441.74,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/32",514755,1330.52,1325.1,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/64",101685,6433.85,6401.67,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/128",37118,19394.4,19299.4,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/256",10526,63649.6,63370.9,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/512",2239,330180,326790,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/1024",439,1.43378e+06,1.41676e+06,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/2048",134,5.51171e+06,5.45066e+06,ns,,,,,
-"BM_HeuristicMetric_ComparisonSort_DegreeLinear/4096",34,2.17606e+07,2.1483e+07,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/8",1553672,449.807,446.785,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/16",619686,1110.85,1103.46,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/32",206863,3082.51,3061.93,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/64",46151,15157.5,15050.6,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/128",15003,47201.8,46766.4,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/256",4252,167429,164868,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/512",1106,644190,632080,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/1024",258,2.76552e+06,2.71148e+06,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/2048",65,1.11106e+07,1.08992e+07,ns,,,,,
+"BM_HeuristicMetric_ComparisonSort_DegreeLinear/4096",16,4.37005e+07,4.2771e+07,ns,,,,,

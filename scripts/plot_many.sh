@@ -60,7 +60,7 @@ if $use_polish; then
     "$script_path" "Czas obliczeń metod dokładnych" "n" \
       "$benchmark_dir/ExactMetric.csv" "Metryka" \
       "$benchmark_dir/hamiltonian_extension_exact_n_changing.csv" "k-roszerzenie Hamiltona" \
-      "$benchmark_dir/max_cycle_exact_changing_n.csv" "Maksymalne cykle" \
+      "$benchmark_dir/max_cycle_exact_changing_n.csv" "Maksymalne k-cykle" \
       -o "$output_dir/exact_methods" --log-y --pl
 
     "$script_path" "Porównanie heurystyk metryk z liniowym stopniem" "n" \
@@ -77,13 +77,13 @@ if $use_polish; then
       "$benchmark_dir/hamiltonian_extension_approximation_k_changing.csv" "k-rozszerzenie Hamiltona - aproksymacja" \
       "$benchmark_dir/hamiltonian_extension_exact_k_changing.csv" "k-rozszerzenie Hamiltona - rozwiązanie dokładne" \
       "$benchmark_dir/hamilton_k_cycles_approximation_changing_k.csv" "Liczba k-cykli Hamiltona - aproksymacja" \
-      "$benchmark_dir/max_cycle_exact_changing_k.csv" "Maksymalne cykle - rozwiązanie dokładne" \
-      "$benchmark_dir/max_cycle_approximation_changing_k.csv" "Maksymalne cykle - aproksymacja" \
+      "$benchmark_dir/max_cycle_exact_changing_k.csv" "Maksymalne k-cykle - rozwiązanie dokładne" \
+      "$benchmark_dir/max_cycle_approximation_changing_k.csv" "Maksymalne k-cykle - aproksymacja" \
       -o "$output_dir/changing-k" --log-y --log-x --height 4 --legend-position "below" --pl
 
     "$script_path" "Czas obliczeń metod aproksymacyjnych" "n" \
       "$benchmark_dir/hamiltonian_extension_approximation_n_changing.csv" "k-rozszerzenie Hamiltona" \
-      "$benchmark_dir/max_cycle_approximation_changing_n.csv" "Maksymalne cykle" \
+      "$benchmark_dir/max_cycle_approximation_changing_n.csv" "Maksymalne k-cykle" \
       -o "$output_dir/approximation_methods" --log-y --pl
 
     "$script_path" "Porównanie metod znajdujących k-rozszerzenie Hamiltona" "n" \
@@ -91,9 +91,10 @@ if $use_polish; then
       "$benchmark_dir/hamiltonian_extension_approximation_n_changing.csv" "Aproksymacja" \
       -o "$output_dir/hamiltonian_extension_methods" --log-y --log-x --pl
 
-    "$script_path" "Porównanie metod znajdujących maksymalne cykle" "n" \
+    "$script_path" "Porównanie metod znajdujących maksymalne k-cykle" "n" \
       "$benchmark_dir/hamiltonian_extension_exact_n_changing.csv" "Rozwiązanie dokładne" \
       "$benchmark_dir/hamiltonian_extension_approximation_n_changing.csv" "Aproksymacja" \
+      "$benchmark_dir/hamilton_k_cycles_approximation_changing_n.csv" "Liczba k-cykli Hamiltona - aproksymacja" \
       -o "$output_dir/max_cycle_methods" --log-y --log-x --pl
 
     "$script_path" "Porównanie metod obliczania metryki" "n" \
@@ -142,6 +143,7 @@ else
     "$script_path" "Comparison of max cycle" "n" \
       "$benchmark_dir/hamiltonian_extension_exact_n_changing.csv" "Exact solution" \
       "$benchmark_dir/hamiltonian_extension_approximation_n_changing.csv" "Approximation" \
+      "$benchmark_dir/hamilton_k_cycles_approximation_changing_n.csv" "Hamiltonian k-cycles count - approximation" \
       -o "$output_dir/max_cycle_methods" --log-y --log-x
 
     "$script_path" "Comparison of metric calculation methods" "n" \

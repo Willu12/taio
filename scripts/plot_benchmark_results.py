@@ -72,12 +72,12 @@ def plot_benchmarks(plot_title, x_axis_name, file_label_pairs, output_path=None,
         print()
 
     plt.xlabel(x_axis_name)
-    plt.ylabel("Zmierzony czas CPU (ns)" if polish else "Measured CPU Time (ns)")
+    plt.ylabel("Rzeczywisty czas wykonania (ns)" if polish else "Measured CPU Time (ns)")
     if log_y:
         plt.yscale("log")
     if log_x:
         plt.xscale("log")
-    plt.title(plot_title)
+    # plt.title(plot_title)
     legend_title = "Metody" if polish else "Methods"
     if legend_position == "outside":
         plt.legend(title=legend_title, loc="upper left", bbox_to_anchor=(1.05, 1), borderaxespad=0.)
