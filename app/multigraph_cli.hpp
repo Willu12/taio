@@ -37,12 +37,13 @@ class MultigraphCLI {
     std::size_t max_print_{10};
     bool approx_{false};
     bool countSort_{false};
+    bool constantOutDegrees_{false};
 
-    void init_compare_command();
+    void init_distance_command();
     void init_find_hamiltonian_extension_command();
     void init_find_max_cycles_command();
 
-    void execute_compare() const;
+    void execute_distance() const;
     void execute_find_hamiltonian_extension() const;
     void execute_find_max_cycles() const;
 

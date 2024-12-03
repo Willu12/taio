@@ -1,0 +1,21 @@
+2024-12-02T21:11:12+01:00
+Running ../build/tests/tests
+Run on (8 X 2358.78 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x4)
+  L1 Instruction 64 KiB (x4)
+  L2 Unified 512 KiB (x4)
+  L3 Unified 4096 KiB (x1)
+Load Average: 1.28, 0.98, 0.73
+***WARNING*** Library was built as DEBUG. Timings may be affected.
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_HeuristicMetric_CountingSort_DegreeLinear/8",3185790,225.227,224.482,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/16",1532965,465.831,464.05,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/32",571767,1224.6,1220.35,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/64",121297,6188.33,6148.45,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/128",37673,17380.3,17313.1,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/256",11588,61745.1,61497.2,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/512",2429,284300,281518,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/1024",552,1.26486e+06,1.24579e+06,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/2048",135,5.09919e+06,5.02556e+06,ns,,,,,
+"BM_HeuristicMetric_CountingSort_DegreeLinear/4096",34,2.08063e+07,2.05383e+07,ns,,,,,

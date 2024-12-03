@@ -6,16 +6,18 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <chrono>
 #include <vector>
 
 MultigraphCLI::MultigraphCLI() {
     app_.description("CLI tool for working with multigraphs.");
-    init_compare_command();
+    init_distance_command();
     init_find_hamiltonian_extension_command();
     init_find_max_cycles_command();
+    app_.require_subcommand(1, 1);
 
     app_.footer("Example:\n"
-                "  ./app compare file0.txt file1.txt -i 0 -j 1\n"
+                "  ./app distance file0.txt file1.txt -i 0 -j 1\n"
                 "  ./app find_hamiltonian_extension graph.txt -i 0 -k 2\n"
                 "  ./app find_max_cycles graph.txt -i 0 -k 2 -p 10");
 }
@@ -29,23 +31,17 @@ int MultigraphCLI::exit(const CLI::ParseError& e) {
 }
 
 void MultigraphCLI::run() const {
-    try {
-        if (app_.got_subcommand("compare")) {
-            execute_compare();
-        } else if (app_.got_subcommand("find_hamiltonian_extension")) {
-            execute_find_hamiltonian_extension();
-        } else if (app_.got_subcommand("find_max_cycles")) {
-            execute_find_max_cycles();
-        } else {
-            throw std::runtime_error("No valid subcommand specified.");
-        }
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << "\n";
+    if (app_.got_subcommand("distance")) {
+        execute_distance();
+    } else if (app_.got_subcommand("find_hamiltonian_extension")) {
+        execute_find_hamiltonian_extension();
+    } else if (app_.got_subcommand("find_max_cycles")) {
+        execute_find_max_cycles();
     }
 }
 
-void MultigraphCLI::init_compare_command() {
-    auto* cmd = app_.add_subcommand("compare", "Calculate metric of given multigraphs.");
+void MultigraphCLI::init_distance_command() {
+    auto* cmd = app_.add_subcommand("distance", "Calculate the distance between given multigraphs.");
     cmd->add_option("file0", input1_.filepath, "Path to the first multigraph file")
         ->required()
         ->check(CLI::ExistingFile);
@@ -56,6 +52,8 @@ void MultigraphCLI::init_compare_command() {
     cmd->add_option("-j,--index1", input2_.index, "Index of the multigraph in the second file")->default_val(0);
     cmd->add_flag("--approx", approx_, "Use heuristic metric");
     cmd->add_flag("--counting-sort", countSort_, "Use counting sort in heuristic metric");
+    cmd->add_flag("--const-out-deg", constantOutDegrees_,
+                  "Use constant-time vertex outgoing degree evaluation in heuristic metric");
 }
 
 void MultigraphCLI::init_find_hamiltonian_extension_command() {
@@ -75,7 +73,7 @@ void MultigraphCLI::init_find_max_cycles_command() {
     cmd->add_option("-p,--print", max_print_, "Maximum amount of printed cycles")->default_val(10);
 }
 
-void MultigraphCLI::execute_compare() const {
+void MultigraphCLI::execute_distance() const {
     const auto multigraphs0 = load_multigraphs(input1_.filepath);
     const auto multigraph0 = get_multigraph(input1_, multigraphs0);
 
@@ -86,15 +84,24 @@ void MultigraphCLI::execute_compare() const {
     print_multigraph(multigraph0);
     print_multigraph(multigraph1);
 
-    std::unique_ptr<metric::Metric> solver;
+    std::unique_ptr<metric::Metric> distFun;
     if (approx_) {
-        solver = std::make_unique<metric::HeuristicMetric>(countSort_);
+        distFun = std::make_unique<metric::HeuristicMetric>(countSort_);
     } else {
-        solver = std::make_unique<metric::ExactMetric>();
+        distFun = std::make_unique<metric::ExactMetric>();
     }
 
-    std::size_t met = (*solver)(multigraph0.multiGraph, multigraph1.multiGraph);
-    std::cout << "Metric: " << met << "\n";
+    std::unique_ptr<core::Multigraph> G, H;
+    if (constantOutDegrees_) {
+        G = std::make_unique<core::DegreeTrackingGraph>(multigraph0.multiGraph);
+        H = std::make_unique<core::DegreeTrackingGraph>(multigraph1.multiGraph);
+    } else {
+        G = std::make_unique<core::Multigraph>(multigraph0.multiGraph);
+        H = std::make_unique<core::Multigraph>(multigraph1.multiGraph);
+    }
+
+    std::size_t distance = (*distFun)(*G, *H);
+    std::cout << "Distance: " << distance << "\n";
 }
 
 void MultigraphCLI::execute_find_hamiltonian_extension() const {

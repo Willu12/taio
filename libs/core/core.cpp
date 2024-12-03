@@ -1,6 +1,7 @@
 #include "core.hpp"
 #include <vector>
 #include <numeric>
+#include <stdlib.h>
 
 namespace core
 {
@@ -100,6 +101,51 @@ std::size_t Multigraph::edgeCount(std::size_t from, std::size_t to) const {
 
 std::size_t Multigraph::outDegree(std::size_t vertex) const {
     return std::accumulate(adjacencyMatrix[vertex].begin(), adjacencyMatrix[vertex].end(), (std::size_t)0);
+}
+
+Multigraph Multigraph::random(std::size_t vertexCount, std::size_t edgeCount) {
+    auto graph = Multigraph(vertexCount);
+
+    for (std::size_t i = 0; i < edgeCount; i++) {
+        std::size_t u = rand() % vertexCount;
+        std::size_t v = rand() % (vertexCount - 1);
+        if (v >= u) v++;
+
+        graph.addEdge(u, v);
+    }
+
+    return graph;
+}
+
+DegreeTrackingGraph::DegreeTrackingGraph(std::size_t size) : Multigraph(size), _outDegrees(size) {
+    computeOutDegrees();
+}
+DegreeTrackingGraph::DegreeTrackingGraph(const core::Multigraph& multigraph)
+    : Multigraph(multigraph), _outDegrees(multigraph.vertexCount()) {
+    computeOutDegrees();
+}
+DegreeTrackingGraph::DegreeTrackingGraph(const std::vector<std::vector<std::size_t>>& adjacencyMatrix)
+    : Multigraph(adjacencyMatrix), _outDegrees(adjacencyMatrix.size()) {
+    computeOutDegrees();
+}
+
+void DegreeTrackingGraph::computeOutDegrees() {
+    for (std::size_t v = 0; v < vertexCount(); v++) {
+        _outDegrees[v] = Multigraph::outDegree(v);
+    }
+}
+
+void DegreeTrackingGraph::addEdge(vertex u, vertex v) {
+    Multigraph::addEdge(u, v);
+    _outDegrees[u]++;
+}
+void DegreeTrackingGraph::removeAllEdges(vertex v) {
+    Multigraph::removeAllEdges(v);
+    _outDegrees[v] = 0;
+}
+
+std::size_t DegreeTrackingGraph::outDegree(std::size_t vertex) const {
+    return _outDegrees[vertex];
 }
 
 } // namespace core

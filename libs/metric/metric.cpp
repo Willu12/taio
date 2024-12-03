@@ -70,8 +70,8 @@ std::size_t HeuristicMetric::edgeDifferenceCompare(std::vector<std::size_t>& deg
     std::sort(degH.begin(), degH.end(), std::greater<>());
 
     std::size_t edgeDifference = 0;
-    for (auto [dG, dH] : std::views::zip(degG, degH)) {
-        edgeDifference += absDiff(dG, dH);
+    for (std::size_t v = 0; v < degG.size(); v++) {
+        edgeDifference += absDiff(degG[v], degH[v]);
     }
     return edgeDifference;
 }
@@ -83,9 +83,9 @@ std::size_t HeuristicMetric::edgeDifferenceCount(const std::vector<std::size_t>&
     std::vector<std::size_t> degreeCounterG(maxDegG + 1, 0);
     std::vector<std::size_t> degreeCounterH(maxDegH + 1, 0);
 
-    for (auto [dG, dH] : std::views::zip(degG, degH)) {
-        degreeCounterG[dG]++;
-        degreeCounterH[dH]++;
+    for (std::size_t v = 0; v < degG.size(); v++) {
+        degreeCounterG[degG[v]]++;
+        degreeCounterH[degH[v]]++;
     }
 
     std::size_t edgeDifference = 0;

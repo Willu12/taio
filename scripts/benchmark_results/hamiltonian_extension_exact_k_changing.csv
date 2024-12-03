@@ -1,0 +1,21 @@
+2024-12-02T21:12:55+01:00
+Running ../build/tests/tests
+Run on (8 X 1960.17 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x4)
+  L1 Instruction 64 KiB (x4)
+  L2 Unified 512 KiB (x4)
+  L3 Unified 4096 KiB (x1)
+Load Average: 1.75, 1.23, 0.85
+***WARNING*** Library was built as DEBUG. Timings may be affected.
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_hamiltonian_extension_exact_k_changing/8",66,1.03376e+07,1.02531e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/16",65,1.09734e+07,1.08707e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/32",63,1.09369e+07,1.08394e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/64",66,1.08518e+07,1.07518e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/128",65,1.07648e+07,1.06724e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/256",67,1.06403e+07,1.05557e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/512",66,1.09119e+07,1.08151e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/1024",67,1.04451e+07,1.03653e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/2048",69,1.08347e+07,1.07414e+07,ns,,,,,
+"BM_hamiltonian_extension_exact_k_changing/4096",64,1.09629e+07,1.08527e+07,ns,,,,,

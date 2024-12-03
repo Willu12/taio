@@ -1,0 +1,21 @@
+2024-12-02T21:12:22+01:00
+Running ../build/tests/tests
+Run on (8 X 1710.24 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x4)
+  L1 Instruction 64 KiB (x4)
+  L2 Unified 512 KiB (x4)
+  L3 Unified 4096 KiB (x1)
+Load Average: 1.72, 1.18, 0.82
+***WARNING*** Library was built as DEBUG. Timings may be affected.
+name,iterations,real_time,cpu_time,time_unit,bytes_per_second,items_per_second,label,error_occurred,error_message
+"BM_max_cycle_exact_changing_k/8",277628,2613.94,2600.84,ns,,,,,
+"BM_max_cycle_exact_changing_k/16",300963,2428.91,2419.56,ns,,,,,
+"BM_max_cycle_exact_changing_k/32",277866,2483.14,2473.05,ns,,,,,
+"BM_max_cycle_exact_changing_k/64",295407,2478.94,2468.52,ns,,,,,
+"BM_max_cycle_exact_changing_k/128",291171,2469.18,2458.41,ns,,,,,
+"BM_max_cycle_exact_changing_k/256",281432,2457.57,2447.16,ns,,,,,
+"BM_max_cycle_exact_changing_k/512",290511,2429.03,2419.52,ns,,,,,
+"BM_max_cycle_exact_changing_k/1024",297852,2462.49,2452.11,ns,,,,,
+"BM_max_cycle_exact_changing_k/2048",294450,2399.95,2390.66,ns,,,,,
+"BM_max_cycle_exact_changing_k/4096",298604,2310.19,2302.72,ns,,,,,
