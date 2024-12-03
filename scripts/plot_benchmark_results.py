@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import sys
 from pathlib import Path
 
-
 def parse_csv(filepath):
     """
     Parses a Google Benchmark CSV file, extracting metadata and benchmark data.
@@ -40,7 +39,6 @@ def parse_csv(filepath):
 
     return metadata, df
 
-
 def derive_x_values(name_column):
     """
     Derives x-axis values (e.g., parameter values) from the `name` column.
@@ -54,7 +52,7 @@ def derive_x_values(name_column):
     # Example: Extract the parameter value after the slash in the name (e.g., "/16" -> 16)
     return name_column.str.extract(r"/(\d+)$")[0].astype(int)
 
-def plot_benchmarks(plot_title, x_axis_name, file_label_pairs, output_path=None, log_y=False, log_x=False, width=10, height=5, legend_position="best"):
+def plot_benchmarks(plot_title, x_axis_name, file_label_pairs, output_path=None, log_y=False, log_x=False, width=10, height=5, legend_position="best", polish=False):
     plt.figure(figsize=(width, height))
 
     for filepath, label in file_label_pairs:
@@ -74,18 +72,19 @@ def plot_benchmarks(plot_title, x_axis_name, file_label_pairs, output_path=None,
         print()
 
     plt.xlabel(x_axis_name)
-    plt.ylabel("Measured CPU Time (ns)")
+    plt.ylabel("Zmierzony czas CPU (ns)" if polish else "Measured CPU Time (ns)")
     if log_y:
         plt.yscale("log")
     if log_x:
         plt.xscale("log")
     plt.title(plot_title)
+    legend_title = "Metody" if polish else "Methods"
     if legend_position == "outside":
-        plt.legend(title="Methods", loc="upper left", bbox_to_anchor=(1.05, 1), borderaxespad=0.)
+        plt.legend(title=legend_title, loc="upper left", bbox_to_anchor=(1.05, 1), borderaxespad=0.)
     elif legend_position == "below":
-        plt.legend(title="Methods", loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2)
+        plt.legend(title=legend_title, loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=2)
     else:
-        plt.legend(title="Methods", loc=legend_position)
+        plt.legend(title=legend_title, loc=legend_position)
     plt.grid(True)
     plt.tight_layout()
 
@@ -96,10 +95,9 @@ def plot_benchmarks(plot_title, x_axis_name, file_label_pairs, output_path=None,
     else:
         plt.show()
 
-
 def main():
     if len(sys.argv) < 4 or "--help" in sys.argv or "-h" in sys.argv:
-        print("Usage: python3 plot_benchmarks.py <plot-title> <x-axis-label> <file1.csv> <label1> [<file2.csv> <label2> ...] [-o <output-path>] [--log-y] [--log-x] [--width <value>] [--height <value>] [--legend-position <position>]")
+        print("Usage: python3 plot_benchmarks.py <plot-title> <x-axis-label> <file1.csv> <label1> [<file2.csv> <label2> ...] [-o <output-path>] [--log-y] [--log-x] [--width <value>] [--height <value>] [--legend-position <position>] [--pl]")
         sys.exit(1)
 
     output_path = None
@@ -108,6 +106,7 @@ def main():
     width = 10
     height = 5
     legend_position = "best"
+    polish = False
     args = sys.argv[1:]
 
     if "--log-y" in args:
@@ -117,6 +116,10 @@ def main():
     if "--log-x" in args:
         log_x = True
         args.remove("--log-x")
+
+    if "--pl" in args:
+        polish = True
+        args.remove("--pl")
 
     if "--width" in args:
         width_index = args.index("--width")
@@ -158,7 +161,7 @@ def main():
     x_axis_name = args[1]
     file_label_pairs = [(args[i], args[i + 1]) for i in range(2, len(args), 2)]
 
-    plot_benchmarks(plot_title, x_axis_name, file_label_pairs, output_path, log_y, log_x, width, height, legend_position)
+    plot_benchmarks(plot_title, x_axis_name, file_label_pairs, output_path, log_y, log_x, width, height, legend_position, polish)
 
 if __name__ == "__main__":
     main()
