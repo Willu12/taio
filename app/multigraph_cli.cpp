@@ -31,12 +31,16 @@ int MultigraphCLI::exit(const CLI::ParseError& e) {
 }
 
 void MultigraphCLI::run() const {
-    if (app_.got_subcommand("distance")) {
-        execute_distance();
-    } else if (app_.got_subcommand("find_hamiltonian_extension")) {
-        execute_find_hamiltonian_extension();
-    } else if (app_.got_subcommand("find_max_cycles")) {
-        execute_find_max_cycles();
+    try {
+		if (app_.got_subcommand("distance")) {
+			execute_distance();
+		} else if (app_.got_subcommand("find_hamiltonian_extension")) {
+			execute_find_hamiltonian_extension();
+		} else if (app_.got_subcommand("find_max_cycles")) {
+			execute_find_max_cycles();
+		}
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << "\n";
     }
 }
 
